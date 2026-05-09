@@ -13,4 +13,4 @@ build
 phpstan-baseline.neon
 .phpstan-cache
 auth.json
-.claude/settings.local.json
+.claude
