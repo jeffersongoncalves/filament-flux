@@ -4,6 +4,43 @@ All notable changes to `filament-flux` will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.4.0 - 2026-05-09
+
+### Highlights
+
+#### `useFluxNavigation(['themeSwitcher' => true])` — Flux theme dropdown
+
+Off by default. When opted in, Filament's three-button theme switcher (`<x-filament-panels::theme-switcher>`) is replaced by a single `<flux:dropdown>` carrying a `<flux:menu>` of light / dark / system.
+
+```php
+FilamentFluxPlugin::make()->useFluxNavigation([
+    'themeSwitcher' => true,
+]);
+
+```
+The trigger reflects the current selection. Filament's `theme-changed` event is dispatched on selection, so the existing dark-mode Alpine store listener and the Phase 1 bridge into `flux.appearance` keep working unchanged.
+
+#### Notifications and user menu — kept as-is
+
+Filament's notifications system and full user menu use deep DSL surfaces (Notification objects with broadcast channels, sortable Action items, profile slots, embedded theme switcher) that don't map cleanly onto Flux primitives. The recommended path:
+
+- For Flux-style toasts in Custom Pages, use `FluxToast::dispatchArgs()` to dispatch `toast-show` Livewire events.
+- Filament's user menu remains the most flexible affordance for tenant menus, profile links, and dynamic items.
+
+### Compatibility
+
+| Filament | Laravel | PHP | Livewire | Flux |
+|---|---|---|---|---|
+| ^5.0 | ^11 / ^12 / ^13 | ^8.2 | ^4.0 | ^2.14 |
+
+### Upgrading from 1.3.0
+
+Drop-in. The new slug ships off by default — existing `useFluxNavigation()` calls keep their previous behavior.
+
+### Roadmap
+
+This release closes the auto-replacement plan (Fase G3). Future minors will track Filament v5.x view changes and add Pro-only Flux components when filament-flux-pro lands.
+
 ## 1.3.0 - 2026-05-09
 
 ### Highlights
@@ -21,6 +58,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
     'topbar' => true,     // topbar item → flux:navbar.item (already in 1.2.0)
     'shell' => true,      // NEW: panel shell → flux:sidebar + flux:main
 ]);
+
 
 ```
 The default `useFluxNavigation()` call (no args) still ships with `shell => false` so panels can adopt the lighter sidebar/topbar item overrides without touching the structural shell.
@@ -51,6 +89,7 @@ Sidebar groups and items render as `<flux:navlist.group>` / `<flux:navlist.item>
 FilamentFluxPlugin::make()->useFluxNavigation();
 
 
+
 ```
 Granular per-area opt-out:
 
@@ -59,6 +98,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
     'sidebar' => true,
     'topbar' => false,    // keep Filament's topbar items as-is
 ]);
+
 
 
 ```
@@ -91,6 +131,7 @@ FilamentFluxPlugin::make()->useEverywhere();
 
 
 
+
 ```
 Granular per-field opt-out:
 
@@ -99,6 +140,7 @@ FilamentFluxPlugin::make()->useEverywhere([
     'select' => false,    // keep Filament's <select> with client-side searchable, etc.
     'otp' => false,
 ]);
+
 
 
 
@@ -189,6 +231,7 @@ npm run build
 
 
 
+
 ```
 ```php
 use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
@@ -196,6 +239,7 @@ use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
 return $panel->plugins([
     FilamentFluxPlugin::make(),
 ]);
+
 
 
 
