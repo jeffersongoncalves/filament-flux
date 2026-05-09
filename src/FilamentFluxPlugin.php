@@ -69,6 +69,31 @@ class FilamentFluxPlugin implements Plugin
      */
     protected ?array $useFluxNavigation = null;
 
+    /**
+     * Mapping of every Blade component slug → namespace + path inside
+     * `resources/views/components-overrides`. The slug is what the user
+     * passes to `useFluxComponents([...])`.
+     *
+     * @var array<string, array{namespace: string, path: string}>
+     */
+    public const COMPONENT_OVERRIDES = [
+        'badge' => ['namespace' => 'filament', 'path' => 'filament/badge'],
+        'avatar' => ['namespace' => 'filament', 'path' => 'filament/avatar'],
+        'icon' => ['namespace' => 'filament', 'path' => 'filament/icon'],
+        'iconButton' => ['namespace' => 'filament', 'path' => 'filament/icon-button'],
+        'link' => ['namespace' => 'filament', 'path' => 'filament/link'],
+        'breadcrumbs' => ['namespace' => 'filament', 'path' => 'filament/breadcrumbs'],
+    ];
+
+    /**
+     * Per-component override toggle. `null` disables every component
+     * override; an array maps each slug (see COMPONENT_OVERRIDES) to a
+     * boolean.
+     *
+     * @var array<string, bool>|null
+     */
+    protected ?array $useFluxComponents = null;
+
     public static function make(): static
     {
         return app(static::class);
@@ -118,6 +143,7 @@ class FilamentFluxPlugin implements Plugin
 
         $this->applyContainerBindings();
         $this->applyNavigationOverrides();
+        $this->applyComponentOverrides();
     }
 
     public function boot(Panel $panel): void
@@ -214,6 +240,39 @@ class FilamentFluxPlugin implements Plugin
         return $this;
     }
 
+    /**
+     * Replace Filament's atomic Blade components (`<x-filament::badge>`,
+     * `<x-filament::avatar>`, etc.) with `<flux:*>` markup. Each slug is
+     * opt-in.
+     *
+     * @param  bool|array<string, bool>  $config  Pass `true` to enable all
+     *                                            H1 components, `false` to disable, or a partial array keyed by slug
+     *                                            (badge, avatar, icon, iconButton, link, breadcrumbs, pagination).
+     */
+    public function useFluxComponents(bool|array $config = true): static
+    {
+        if ($config === false) {
+            $this->useFluxComponents = null;
+
+            return $this;
+        }
+
+        $defaults = array_fill_keys(array_keys(static::COMPONENT_OVERRIDES), true);
+
+        if ($config === true) {
+            $this->useFluxComponents = $defaults;
+
+            return $this;
+        }
+
+        $this->useFluxComponents = array_merge(
+            array_fill_keys(array_keys(static::COMPONENT_OVERRIDES), false),
+            $config,
+        );
+
+        return $this;
+    }
+
     public function getScopeClass(): ?string
     {
         return $this->scopeClass;
@@ -257,6 +316,20 @@ class FilamentFluxPlugin implements Plugin
         return array_keys(array_filter($this->useFluxNavigation, fn (bool $on): bool => $on));
     }
 
+    /**
+     * Slugs of atomic Blade components currently overridden.
+     *
+     * @return array<int, string>
+     */
+    public function getActiveComponentOverrides(): array
+    {
+        if ($this->useFluxComponents === null) {
+            return [];
+        }
+
+        return array_keys(array_filter($this->useFluxComponents, fn (bool $on): bool => $on));
+    }
+
     protected function applyContainerBindings(): void
     {
         if ($this->useEverywhere === null) {
@@ -275,6 +348,35 @@ class FilamentFluxPlugin implements Plugin
             }
 
             app()->bind($binding['from'], $binding['to']);
+        }
+    }
+
+    protected function applyComponentOverrides(): void
+    {
+        if ($this->useFluxComponents === null) {
+            return;
+        }
+
+        $base = __DIR__.'/../resources/views/components-overrides';
+
+        foreach ($this->useFluxComponents as $slug => $enabled) {
+            if (! $enabled) {
+                continue;
+            }
+
+            $config = static::COMPONENT_OVERRIDES[$slug] ?? null;
+
+            if ($config === null) {
+                continue;
+            }
+
+            $path = realpath("{$base}/{$config['path']}");
+
+            if ($path === false) {
+                continue;
+            }
+
+            View::prependNamespace($config['namespace'], $path);
         }
     }
 

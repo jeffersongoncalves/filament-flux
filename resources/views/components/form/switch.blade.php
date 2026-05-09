@@ -10,6 +10,16 @@
     ], fn ($v) => $v !== null));
 @endphp
 
-<x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
-    <x-flux::switch :attributes="$bag" />
+<x-dynamic-component
+    :component="$getFieldWrapperView()"
+    :field="$field"
+    :inline-label-vertical-alignment="\Filament\Support\Enums\VerticalAlignment::Center"
+>
+    @if ($isInline())
+        <x-slot name="labelPrefix">
+            <x-flux::switch :attributes="$bag" />
+        </x-slot>
+    @else
+        <x-flux::switch :attributes="$bag" />
+    @endif
 </x-dynamic-component>

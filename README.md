@@ -141,6 +141,35 @@ FilamentFluxPlugin::make()->useFluxNavigation([
 ]);
 ```
 
+### Use Flux Blade components (`useFluxComponents()`)
+
+Replace Filament's atomic `<x-filament::*>` Blade components with `<x-flux::*>`. Each slug is opt-in.
+
+```php
+FilamentFluxPlugin::make()->useFluxComponents();
+// or granular:
+FilamentFluxPlugin::make()->useFluxComponents([
+    'badge' => true,
+    'avatar' => true,
+    'icon' => true,
+    'link' => true,
+    // omit/false → keep Filament's view
+]);
+```
+
+H1 slugs (this release):
+
+| Slug | Filament view | Flux replacement |
+|---|---|---|
+| `badge` | `filament::components.badge` | `<flux:badge>` |
+| `avatar` | `filament::components.avatar` | `<flux:avatar>` |
+| `icon` | `filament::components.icon` | `<flux:icon>` (falls back to native HTML for non-string icons) |
+| `iconButton` | `filament::components.icon-button` | `<flux:button square icon>` |
+| `link` | `filament::components.link` | `<flux:link>` |
+| `breadcrumbs` | `filament::components.breadcrumbs` | `<flux:breadcrumbs>` |
+
+The plugin prepends per-slug hint paths to the `filament` view namespace; missing files fall back to vendor copies. Feature complexity (delete buttons on badges, key bindings, loading indicators in icon buttons) doesn't fully map to Flux primitives — disable a slug if you rely on the Filament-only affordances.
+
 #### Notifications and user menu
 
 Filament's notifications system and user-menu use deep DSL surfaces that don't map cleanly onto Flux primitives. The recommended path:
