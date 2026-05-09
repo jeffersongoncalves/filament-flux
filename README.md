@@ -111,8 +111,9 @@ Granular per-area opt-out:
 ```php
 FilamentFluxPlugin::make()->useFluxNavigation([
     'sidebar' => true,
-    'topbar' => false,    // keep Filament's topbar items as-is
-    'shell' => true,      // see "Full panel shell" below
+    'topbar' => false,         // keep Filament's topbar items as-is
+    'shell' => true,           // see "Full panel shell" below
+    'themeSwitcher' => true,   // see "Theme switcher" below
 ]);
 ```
 
@@ -129,6 +130,23 @@ FilamentFluxPlugin::make()->useFluxNavigation([
 ```
 
 This is the most invasive override — opt in only after you've confirmed your panel's render hooks and customizations still render correctly. The Filament version that ships with each `filament-flux` release is the one that's been verified.
+
+#### Theme switcher (`themeSwitcher` toggle)
+
+Off by default. Replaces the three-button theme switcher (`light` / `dark` / `system`) with a single `<flux:dropdown>` carrying a `<flux:menu>` of the three modes. Filament's `theme-changed` event is dispatched on selection, so the existing dark mode listener and the bridge into `flux.appearance` (Phase 1) keep working unchanged.
+
+```php
+FilamentFluxPlugin::make()->useFluxNavigation([
+    'themeSwitcher' => true,
+]);
+```
+
+#### Notifications and user menu
+
+Filament's notifications system and user-menu use deep DSL surfaces that don't map cleanly onto Flux primitives. The recommended path:
+
+- For Flux-style toasts in Custom Pages, use `Jeffersongoncalves\FilamentFlux\Components\FluxToast` to dispatch `toast-show` Livewire events. Pair with `<x-flux::toast.group>` in your panel layout's `body.start` render hook.
+- The Filament user-menu remains the most flexible affordance for tenant menus, profile links, and dynamic items. Keep it as-is.
 
 ## Form Fields
 

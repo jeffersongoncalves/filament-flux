@@ -93,3 +93,27 @@ it('useFluxNavigation(array) keeps shell off unless explicitly enabled', functio
 
     expect($joined)->not->toContain('panels-overrides'.DIRECTORY_SEPARATOR.'shell');
 });
+
+it('useFluxNavigation([themeSwitcher => true]) enables theme switcher slug', function () {
+    $plugin = FilamentFluxPlugin::make()->useFluxNavigation(['themeSwitcher' => true]);
+
+    expect($plugin->getActiveNavigationOverrides())->toContain('themeSwitcher');
+});
+
+it('themeSwitcher defaults to off when useFluxNavigation() is called bare', function () {
+    $plugin = FilamentFluxPlugin::make()->useFluxNavigation();
+
+    expect($plugin->getActiveNavigationOverrides())->not->toContain('themeSwitcher');
+});
+
+it('prepends the themeSwitcher path when the slug is enabled', function () {
+    FilamentFluxPlugin::make()
+        ->useFluxNavigation(['themeSwitcher' => true])
+        ->register(Panel::make()->id('nav-test')->path('nav-test'));
+
+    $factory = View::getFinder();
+    $hints = $factory->getHints();
+    $joined = implode("\n", $hints['filament-panels'] ?? []);
+
+    expect($joined)->toContain('panels-overrides'.DIRECTORY_SEPARATOR.'themeSwitcher');
+});

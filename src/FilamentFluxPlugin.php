@@ -192,10 +192,16 @@ class FilamentFluxPlugin implements Plugin
             return $this;
         }
 
-        // `shell` is opt-in even when `useFluxNavigation(true)` is called —
-        // it touches the Livewire sidebar view and panel layout, so it
-        // ships off by default to keep upgrades safe.
-        $defaults = ['sidebar' => true, 'topbar' => true, 'shell' => false];
+        // `shell` and `themeSwitcher` are opt-in even when
+        // `useFluxNavigation(true)` is called — they touch larger views
+        // (Livewire sidebar, layout, theme-switcher dropdown) so they
+        // ship off by default to keep Filament upgrades safe.
+        $defaults = [
+            'sidebar' => true,
+            'topbar' => true,
+            'shell' => false,
+            'themeSwitcher' => false,
+        ];
 
         if ($config === true) {
             $this->useFluxNavigation = $defaults;
