@@ -13,20 +13,20 @@ it('uses the OTP view', function () {
         ->toBe('filament-flux::components.form.otp');
 });
 
-it('defaults digits to 6', function () {
-    expect(FluxOtpInput::make('code')->getDigits())->toBe(6);
+it('inherits length default of 6 from OneTimeCodeInput', function () {
+    expect(FluxOtpInput::make('code')->getLength())->toBe(6);
 });
 
-it('accepts custom digits and private flag', function () {
-    $field = FluxOtpInput::make('code')->digits(4)->private();
+it('accepts custom length and private flag', function () {
+    $field = FluxOtpInput::make('code')->length(4)->private();
 
-    expect($field->getDigits())->toBe(4);
+    expect($field->getLength())->toBe(4);
     expect($field->isPrivate())->toBeTrue();
 });
 
 it('binds state through Filament form', function () {
     TestForm::$fieldsCallback = fn () => [
-        FluxOtpInput::make('code')->digits(6),
+        FluxOtpInput::make('code')->length(6),
     ];
 
     Livewire::test(TestForm::class)

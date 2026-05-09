@@ -66,6 +66,38 @@ FilamentFluxPlugin::make()
 
 The plugin also installs a JavaScript bridge between Filament's theme switcher and Flux's appearance store, so toggling theme in either system stays in sync (including cross-tab via `storage` events).
 
+### Use Flux everywhere (auto-replace Filament Form Fields)
+
+Existing Resources keep calling `TextInput::make()`, `Select::make()`, etc. — they receive the matching Flux subclass automatically. No code changes in your Resources.
+
+```php
+FilamentFluxPlugin::make()->useEverywhere();
+```
+
+Granular opt-out per field:
+
+```php
+FilamentFluxPlugin::make()->useEverywhere([
+    'select' => false,    // keep Filament's <select> with client-side searchable, etc.
+    'otp' => false,
+]);
+```
+
+Available slugs (all default to `true` when `useEverywhere()` is called):
+
+| Slug | Filament class | Flux replacement |
+|---|---|---|
+| `input` | `TextInput` | `FluxInput` |
+| `textarea` | `Textarea` | `FluxTextarea` |
+| `select` | `Select` | `FluxSelect` |
+| `checkbox` | `Checkbox` | `FluxCheckbox` |
+| `checkboxList` | `CheckboxList` | `FluxCheckboxGroup` |
+| `radio` | `Radio` | `FluxRadio` |
+| `toggle` | `Toggle` | `FluxSwitch` |
+| `otp` | `OneTimeCodeInput` | `FluxOtpInput` |
+
+Each Flux subclass extends the matching Filament native, so every method it exposes — `autocomplete()`, `mask()`, `revealable()`, `length()`, `searchable()`, `relationship()`, etc. — keeps working. Only the rendered markup changes.
+
 ## Form Fields
 
 ```php
