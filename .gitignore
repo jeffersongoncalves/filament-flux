@@ -1,0 +1,16 @@
+/vendor
+/node_modules
+composer.lock
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.phpunit.result.cache
+.phpunit.cache
+.idea
+.vscode
+.DS_Store
+build
+phpstan-baseline.neon
+.phpstan-cache
+auth.json
+.claude/settings.local.json

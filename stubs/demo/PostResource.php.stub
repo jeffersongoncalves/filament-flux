@@ -1,0 +1,151 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\PostResource\Pages;
+use App\Models\Post;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Tables\Table;
+use Jeffersongoncalves\FilamentFlux\Actions\FluxAction;
+use Jeffersongoncalves\FilamentFlux\Actions\FluxDropdown;
+use Jeffersongoncalves\FilamentFlux\Forms\Components\FluxCheckboxGroup;
+use Jeffersongoncalves\FilamentFlux\Forms\Components\FluxInput;
+use Jeffersongoncalves\FilamentFlux\Forms\Components\FluxRadioGroup;
+use Jeffersongoncalves\FilamentFlux\Forms\Components\FluxSelect;
+use Jeffersongoncalves\FilamentFlux\Forms\Components\FluxSwitch;
+use Jeffersongoncalves\FilamentFlux\Forms\Components\FluxTextarea;
+use Jeffersongoncalves\FilamentFlux\Infolists\Components\FluxBadgeEntry;
+use Jeffersongoncalves\FilamentFlux\Infolists\Components\FluxTextEntry;
+use Jeffersongoncalves\FilamentFlux\Tables\Columns\FluxAvatarColumn;
+use Jeffersongoncalves\FilamentFlux\Tables\Columns\FluxBadgeColumn;
+use Jeffersongoncalves\FilamentFlux\Tables\Columns\FluxIconColumn;
+
+class PostResource extends Resource
+{
+    protected static ?string $model = Post::class;
+
+    public static function form(Schema $schema): Schema
+    {
+        return $schema->components([
+            FluxInput::make('title')
+                ->fluxIcon('document-text')
+                ->fluxClearable()
+                ->required(),
+
+            FluxInput::make('slug')
+                ->fluxCopyable()
+                ->required(),
+
+            FluxTextarea::make('excerpt')->rows(3),
+
+            FluxSelect::make('status')
+                ->options([
+                    'draft' => 'Draft',
+                    'published' => 'Published',
+                    'archived' => 'Archived',
+                ])
+                ->required(),
+
+            FluxRadioGroup::make('priority')
+                ->fluxVariant('segmented')
+                ->options([
+                    'low' => 'Low',
+                    'medium' => 'Medium',
+                    'high' => 'High',
+                ]),
+
+            FluxCheckboxGroup::make('tags')
+                ->fluxVariant('cards')
+                ->options([
+                    'php' => 'PHP',
+                    'laravel' => 'Laravel',
+                    'filament' => 'Filament',
+                    'flux' => 'Flux',
+                ]),
+
+            FluxSwitch::make('is_featured')->fluxAlign('right'),
+        ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                FluxAvatarColumn::make('author.avatar')
+                    ->fluxName(fn ($state, $record) => $record->author?->name)
+                    ->fluxSize('sm'),
+
+                FluxBadgeColumn::make('status')
+                    ->fluxColor([
+                        'draft' => 'zinc',
+                        'published' => 'lime',
+                        'archived' => 'red',
+                    ])
+                    ->fluxIcon(fn ($state) => match ($state) {
+                        'published' => 'check-circle',
+                        'archived' => 'archive-box',
+                        default => null,
+                    })
+                    ->fluxBadgeVariant('pill'),
+
+                FluxIconColumn::make('priority')
+                    ->fluxColor(fn ($state) => match ($state) {
+                        'high' => 'red',
+                        'medium' => 'amber',
+                        'low' => 'zinc',
+                        default => null,
+                    })
+                    ->fluxIcon(fn ($state) => match ($state) {
+                        'high' => 'fire',
+                        'medium' => 'bolt',
+                        'low' => 'minus',
+                        default => null,
+                    }),
+            ])
+            ->recordActions([
+                FluxDropdown::make([
+                    FluxAction::make('publish')
+                        ->fluxIcon('rocket-launch')
+                        ->fluxVariant('primary')
+                        ->visible(fn ($record) => $record->status !== 'published')
+                        ->action(fn ($record) => $record->update(['status' => 'published'])),
+
+                    FluxAction::make('archive')
+                        ->fluxIcon('archive-box')
+                        ->fluxVariant('subtle')
+                        ->requiresConfirmation()
+                        ->action(fn ($record) => $record->update(['status' => 'archived'])),
+
+                    FluxAction::make('delete')
+                        ->fluxIcon('trash')
+                        ->fluxVariant('danger')
+                        ->requiresConfirmation()
+                        ->action(fn ($record) => $record->delete()),
+                ])->label('Actions'),
+            ]);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return $schema->components([
+            FluxTextEntry::make('title')->fluxSize('lg'),
+            FluxTextEntry::make('excerpt')->fluxColor('zinc'),
+            FluxBadgeEntry::make('status')
+                ->fluxColor([
+                    'draft' => 'zinc',
+                    'published' => 'lime',
+                    'archived' => 'red',
+                ]),
+        ]);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListPosts::route('/'),
+            'create' => Pages\CreatePost::route('/create'),
+            'edit' => Pages\EditPost::route('/{record}/edit'),
+        ];
+    }
+}

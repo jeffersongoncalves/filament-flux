@@ -1,0 +1,30 @@
+@source "../resources/views";
+
+@theme {
+    /* Reserved for future filament-flux design tokens. */
+}
+
+.filament-flux-scope {
+    /* Map Filament v5 design tokens to Flux UI tokens. */
+    --color-accent: var(--fi-color-primary-600);
+    --color-accent-content: var(--fi-color-primary-600);
+    --color-accent-foreground: var(--fi-color-primary-50);
+
+    --color-zinc-50: var(--fi-color-gray-50);
+    --color-zinc-100: var(--fi-color-gray-100);
+    --color-zinc-200: var(--fi-color-gray-200);
+    --color-zinc-300: var(--fi-color-gray-300);
+    --color-zinc-400: var(--fi-color-gray-400);
+    --color-zinc-500: var(--fi-color-gray-500);
+    --color-zinc-600: var(--fi-color-gray-600);
+    --color-zinc-700: var(--fi-color-gray-700);
+    --color-zinc-800: var(--fi-color-gray-800);
+    --color-zinc-900: var(--fi-color-gray-900);
+    --color-zinc-950: var(--fi-color-gray-950);
+}
+
+.dark .filament-flux-scope {
+    --color-accent: var(--fi-color-primary-500);
+    --color-accent-content: var(--fi-color-primary-500);
+    --color-accent-foreground: var(--fi-color-primary-950);
+}

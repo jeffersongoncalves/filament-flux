@@ -1,0 +1,34 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+        - config
+    excludePaths:
+        - src/Commands/InstallCommand.php
+    ignoreErrors:
+        -
+            identifier: argument.type
+            message: '#Parameter \#1 \$view of function view expects view-string\|null, string given\.#'
+            paths:
+                - src/Support/AssetInjector.php
+                - src/Support/FluxIcon.php
+                - src/Components/FluxBreadcrumbs.php
+                - src/Components/FluxModal.php
+                - src/Components/FluxPagination.php
+        -
+            identifier: argument.type
+            message: '#Parameter \#1 \$view of method Filament\\Support\\Components\\ViewComponent::defaultView\(\) expects Closure\|view-string\|null, .* given\.#'
+            paths:
+                - src/Actions/FluxAction.php
+                - src/Actions/FluxDropdown.php
+                - src/Actions/FluxLinkAction.php
+        -
+            identifier: property.defaultValue
+            message: '#Property .+::\$view \(view-string\) does not accept default value of type string\.#'
+            paths:
+                - src/Forms/Components
+                - src/Tables/Columns
+                - src/Infolists/Components

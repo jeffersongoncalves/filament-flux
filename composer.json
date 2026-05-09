@@ -1,0 +1,69 @@
+{
+    "name": "jeffersongoncalves/filament-flux",
+    "description": "Filament v5 plugin exposing Livewire Flux UI components as native Form Fields, Table Columns, Infolist Entries and Actions.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "filament",
+        "flux",
+        "livewire",
+        "tailwind",
+        "laravel",
+        "filament-plugin"
+    ],
+    "homepage": "https://github.com/jeffersongoncalves/filament-flux",
+    "support": {
+        "issues": "https://github.com/jeffersongoncalves/filament-flux/issues",
+        "source": "https://github.com/jeffersongoncalves/filament-flux"
+    },
+    "authors": [
+        {
+            "name": "Jefferson Gonçalves",
+            "email": "gerson.simao.92@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "filament/filament": "^5.0",
+        "livewire/flux": "^2.14",
+        "spatie/laravel-package-tools": "^1.16"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.0",
+        "laravel/pint": "^1.18",
+        "orchestra/testbench": "^9.0 || ^10.0",
+        "pestphp/pest": "^3.0",
+        "pestphp/pest-plugin-laravel": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jeffersongoncalves\\FilamentFlux\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Jeffersongoncalves\\FilamentFlux\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse",
+        "format": "vendor/bin/pint",
+        "test": "vendor/bin/pest"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Jeffersongoncalves\\FilamentFlux\\FilamentFluxServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

@@ -1,0 +1,17 @@
+@php
+    $statePath = $getStatePath();
+    $bindKey = $applyStateBindingModifiers('wire:model');
+
+    $bag = new \Illuminate\View\ComponentAttributeBag(array_filter([
+        $bindKey => $statePath,
+        'length' => $getDigits(),
+        'private' => $isPrivate() ? 'true' : null,
+        'disabled' => $isDisabled() ? 'true' : null,
+        'required' => $isRequired() ? 'true' : null,
+        'invalid' => $errors->has($statePath) ? 'true' : null,
+    ], fn ($v) => $v !== null));
+@endphp
+
+<x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
+    <x-flux::otp :attributes="$bag" />
+</x-dynamic-component>

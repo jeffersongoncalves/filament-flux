@@ -1,0 +1,3 @@
+@if ($injectScripts)
+    @fluxScripts
+@endif
