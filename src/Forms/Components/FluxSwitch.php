@@ -14,16 +14,6 @@ class FluxSwitch extends Toggle
 
     protected string|Closure $align = 'right';
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        // <flux:switch> renders its own inline label, so hide the outer
-        // Filament label by default to avoid duplication. Users can opt
-        // back in via `hiddenLabel(false)`.
-        $this->hiddenLabel();
-    }
-
     /**
      * @param  'left'|'right'|Closure  $align
      */

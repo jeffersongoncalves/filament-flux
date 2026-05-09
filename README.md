@@ -1,6 +1,6 @@
 <div class="filament-hidden">
 
-![Filament Flux](https://raw.githubusercontent.com/jeffersongoncalves/filament-flux/main/art/jeffersongoncalves-filament-flux.png)
+![Filament Flux](https://raw.githubusercontent.com/jeffersongoncalves/filament-flux/1.x/art/jeffersongoncalves-filament-flux.png)
 
 </div>
 

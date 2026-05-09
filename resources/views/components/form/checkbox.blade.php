@@ -4,7 +4,6 @@
 
     $bag = new \Illuminate\View\ComponentAttributeBag(array_filter([
         $bindKey => $statePath,
-        'label' => $getLabel(),
         'disabled' => $isDisabled() ? 'true' : null,
         'required' => $isRequired() ? 'true' : null,
         'invalid' => $errors->has($statePath) ? 'true' : null,
