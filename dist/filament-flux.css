@@ -1,5 +1,10 @@
 @source "../resources/views/components/**/*";
 
+@source inline("text-{zinc,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{400,500}");
+@source inline("dark:text-{zinc,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{400,500}");
+@source inline("bg-{zinc,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,500,600}");
+@source inline("dark:bg-{zinc,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,500,600}");
+
 /*
  * Map Filament's accent (`--color-primary-*`) onto Flux's accent tokens.
  * The Flux zinc palette is left untouched — Tailwind v4 generates
@@ -16,4 +21,27 @@
     --color-accent: var(--color-primary-500);
     --color-accent-content: var(--color-primary-400);
     --color-accent-foreground: var(--color-primary-950);
+}
+
+/*
+ * Replace the browser default focus ring (UA black/blue) on every Flux
+ * control with a Filament-primary ring. Matches Filament's own native
+ * focus styling so mixed forms look uniform.
+ */
+
+.filament-flux-scope [data-flux-control]:focus-visible,
+.filament-flux-scope [data-flux-control]:focus {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+}
+
+.filament-flux-scope [data-flux-control][data-invalid]:focus-visible,
+.filament-flux-scope [data-flux-control][data-invalid]:focus {
+    outline-color: var(--color-red-500);
+}
+
+/* Disable the default outline on textareas/selects so the custom ring above
+   is the only visible affordance. */
+.filament-flux-scope [data-flux-control] {
+    outline-color: transparent;
 }

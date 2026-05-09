@@ -4,13 +4,12 @@
 
     $bag = new \Illuminate\View\ComponentAttributeBag(array_filter([
         $bindKey => $statePath,
-        'label' => $getLabel(),
         'align' => $getFluxAlign(),
         'disabled' => $isDisabled() ? 'true' : null,
         'invalid' => $errors->has($statePath) ? 'true' : null,
     ], fn ($v) => $v !== null));
 @endphp
 
-<x-dynamic-component :component="$getFieldWrapperView()" :field="$field" :hasLabel="false">
+<x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
     <x-flux::switch :attributes="$bag" />
 </x-dynamic-component>
