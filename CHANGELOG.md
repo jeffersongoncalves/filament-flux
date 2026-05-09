@@ -4,6 +4,57 @@ All notable changes to `filament-flux` will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.5.0 - 2026-05-09
+
+### Highlights
+
+#### `useFluxComponents()` — Filament Blade component overrides (Phase H1)
+
+A new opt-in API alongside `useEverywhere()` and `useFluxNavigation()`. Six atomic `<x-filament::*>` Blade components are now swappable for `<x-flux::*>` markup at runtime via `View::prependNamespace`.
+
+```php
+FilamentFluxPlugin::make()->useFluxComponents();
+
+// granular:
+FilamentFluxPlugin::make()->useFluxComponents([
+    'badge' => true,
+    'avatar' => true,
+    'icon' => true,
+    'iconButton' => false,    // keep Filament for icon buttons with key bindings
+    'link' => true,
+    'breadcrumbs' => true,
+]);
+
+```
+| Slug | Filament view | Flux replacement |
+|---|---|---|
+| `badge` | `filament::components.badge` | `<flux:badge>` (color map: primary → blue, success → lime, warning → amber, danger → red, info → cyan, gray → zinc) |
+| `avatar` | `filament::components.avatar` | `<flux:avatar>` |
+| `icon` | `filament::components.icon` | `<flux:icon>` (falls back to native HTML for non-string icons) |
+| `iconButton` | `filament::components.icon-button` | `<flux:button square icon>` |
+| `link` | `filament::components.link` | `<flux:link>` |
+| `breadcrumbs` | `filament::components.breadcrumbs` | `<flux:breadcrumbs>` + `<flux:breadcrumbs.item>` |
+
+Filament-specific affordances (delete buttons on badges, key bindings, loading indicators) don't fully map to Flux primitives — disable a slug if you rely on them.
+
+#### `pagination` slug deferred
+
+Filament's pagination handles cursor paginators and per-page selectors that `<flux:pagination>` doesn't cover in the free tier. Will land in a later H2 release alongside the schema/widget overrides.
+
+#### Fix: inline checkbox / switch layout
+
+`FluxCheckbox` and `FluxSwitch` views now honor Filament's `isInline()` flag and emit the inner control inside the `<x-slot name="labelPrefix">` slot when inline is true. Restores horizontal layout (label beside control instead of below).
+
+### Compatibility
+
+| Filament | Laravel | PHP | Livewire | Flux |
+|---|---|---|---|---|
+| ^5.0 | ^11 / ^12 / ^13 | ^8.2 | ^4.0 | ^2.14 |
+
+### Upgrading from 1.4.0
+
+Drop-in. `useFluxComponents()` is a new feature — existing `useEverywhere()` and `useFluxNavigation()` calls keep their previous behavior.
+
 ## 1.4.0 - 2026-05-09
 
 ### Highlights
@@ -16,6 +67,7 @@ Off by default. When opted in, Filament's three-button theme switcher (`<x-filam
 FilamentFluxPlugin::make()->useFluxNavigation([
     'themeSwitcher' => true,
 ]);
+
 
 ```
 The trigger reflects the current selection. Filament's `theme-changed` event is dispatched on selection, so the existing dark-mode Alpine store listener and the Phase 1 bridge into `flux.appearance` keep working unchanged.
@@ -60,6 +112,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
 ]);
 
 
+
 ```
 The default `useFluxNavigation()` call (no args) still ships with `shell => false` so panels can adopt the lighter sidebar/topbar item overrides without touching the structural shell.
 
@@ -90,6 +143,7 @@ FilamentFluxPlugin::make()->useFluxNavigation();
 
 
 
+
 ```
 Granular per-area opt-out:
 
@@ -98,6 +152,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
     'sidebar' => true,
     'topbar' => false,    // keep Filament's topbar items as-is
 ]);
+
 
 
 
@@ -132,6 +187,7 @@ FilamentFluxPlugin::make()->useEverywhere();
 
 
 
+
 ```
 Granular per-field opt-out:
 
@@ -140,6 +196,7 @@ FilamentFluxPlugin::make()->useEverywhere([
     'select' => false,    // keep Filament's <select> with client-side searchable, etc.
     'otp' => false,
 ]);
+
 
 
 
@@ -232,6 +289,7 @@ npm run build
 
 
 
+
 ```
 ```php
 use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
@@ -239,6 +297,7 @@ use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
 return $panel->plugins([
     FilamentFluxPlugin::make(),
 ]);
+
 
 
 
