@@ -4,6 +4,56 @@ All notable changes to `filament-flux` will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.1.0 - 2026-05-09
+
+### Highlights
+
+#### `useEverywhere()` — auto-replace Filament Form Fields with Flux
+
+Existing Resources keep calling `TextInput::make()`, `Select::make()`, etc. — they receive the matching Flux subclass automatically. No code changes inside Resources.
+
+```php
+FilamentFluxPlugin::make()->useEverywhere();
+
+```
+Granular per-field opt-out:
+
+```php
+FilamentFluxPlugin::make()->useEverywhere([
+    'select' => false,    // keep Filament's <select> with client-side searchable, etc.
+    'otp' => false,
+]);
+
+```
+Eight bindings registered when enabled:
+
+| Slug | Filament class | Flux replacement |
+|---|---|---|
+| `input` | `TextInput` | `FluxInput` |
+| `textarea` | `Textarea` | `FluxTextarea` |
+| `select` | `Select` | `FluxSelect` |
+| `checkbox` | `Checkbox` | `FluxCheckbox` |
+| `checkboxList` | `CheckboxList` | `FluxCheckboxGroup` |
+| `radio` | `Radio` | `FluxRadio` |
+| `toggle` | `Toggle` | `FluxSwitch` |
+| `otp` | `OneTimeCodeInput` | `FluxOtpInput` |
+
+Each Flux subclass extends the matching Filament native, so the full upstream DSL (`autocomplete()`, `mask()`, `revealable()`, `searchable()`, `relationship()`, etc.) keeps working — only the rendered markup changes.
+
+#### Internal
+
+- `FluxOtpInput` now extends `Filament\Forms\Components\OneTimeCodeInput` (previously `TextInput`), so its container-bind chain matches Filament's class hierarchy. The custom `digits()` helper is gone in favour of the inherited `length()`.
+
+### Compatibility
+
+| Filament | Laravel | PHP | Livewire | Flux |
+|---|---|---|---|---|
+| ^5.0 | ^11 / ^12 / ^13 | ^8.2 | ^4.0 | ^2.14 |
+
+### Upgrading from 1.0.0
+
+No breaking changes for users that don't call `useEverywhere()`. If you wrote code against `FluxOtpInput::digits()` or `getDigits()`, replace with `length()` / `getLength()`.
+
 ## 1.0.0 - 2026-05-09
 
 Initial release of **filament-flux** for Filament v5.
@@ -58,6 +108,7 @@ php artisan make:filament-theme admin
 php artisan filament-flux:install --panel=admin
 npm run build
 
+
 ```
 ```php
 use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
@@ -65,5 +116,6 @@ use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
 return $panel->plugins([
     FilamentFluxPlugin::make(),
 ]);
+
 
 ```
