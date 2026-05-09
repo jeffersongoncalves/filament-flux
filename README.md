@@ -98,6 +98,25 @@ Available slugs (all default to `true` when `useEverywhere()` is called):
 
 Each Flux subclass extends the matching Filament native, so every method it exposes — `autocomplete()`, `mask()`, `revealable()`, `length()`, `searchable()`, `relationship()`, etc. — keeps working. Only the rendered markup changes.
 
+### Use Flux navigation (sidebar + topbar)
+
+Replace Filament's sidebar and topbar items with `<flux:navlist.item>` / `<flux:navlist.group>` and `<flux:navbar.item>` markup, while keeping Filament's data layer (active state, badges, child items, registered Resources/Pages/custom items) intact.
+
+```php
+FilamentFluxPlugin::make()->useFluxNavigation();
+```
+
+Granular per-area opt-out:
+
+```php
+FilamentFluxPlugin::make()->useFluxNavigation([
+    'sidebar' => true,
+    'topbar' => false,    // keep Filament's topbar items as-is
+]);
+```
+
+The plugin prepends per-area hint paths to the `filament-panels` view namespace; missing files fall back to the vendor copies, so upgrading Filament minors stays safe as long as the overridden views (sidebar `item`, sidebar `group`, topbar `item`) still match the prop signatures of the active Filament minor.
+
 ## Form Fields
 
 ```php

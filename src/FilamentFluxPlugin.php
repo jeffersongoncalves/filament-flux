@@ -14,6 +14,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Panel;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
 use Jeffersongoncalves\FilamentFlux\Forms\Components\FluxCheckbox;
 use Jeffersongoncalves\FilamentFlux\Forms\Components\FluxCheckboxGroup;
@@ -59,6 +60,14 @@ class FilamentFluxPlugin implements Plugin
      * @var array<string, bool>|null
      */
     protected ?array $useEverywhere = null;
+
+    /**
+     * Per-area navigation override toggle. `null` disables overrides; an
+     * array maps each area slug (sidebar, topbar) to a boolean.
+     *
+     * @var array<string, bool>|null
+     */
+    protected ?array $useFluxNavigation = null;
 
     public static function make(): static
     {
@@ -108,6 +117,7 @@ class FilamentFluxPlugin implements Plugin
         }
 
         $this->applyContainerBindings();
+        $this->applyNavigationOverrides();
     }
 
     public function boot(Panel $panel): void
@@ -166,6 +176,35 @@ class FilamentFluxPlugin implements Plugin
         return $this;
     }
 
+    /**
+     * Replace Filament's `<x-filament-panels::sidebar.item|group>` and
+     * `<x-filament-panels::topbar.item>` views with `<flux:navlist>` /
+     * `<flux:navbar>` markup.
+     *
+     * @param  bool|array<string, bool>  $config  Pass `true` for sidebar+topbar,
+     *                                            `false` to disable, or an array keyed by `sidebar` / `topbar`.
+     */
+    public function useFluxNavigation(bool|array $config = true): static
+    {
+        if ($config === false) {
+            $this->useFluxNavigation = null;
+
+            return $this;
+        }
+
+        $defaults = ['sidebar' => true, 'topbar' => true];
+
+        if ($config === true) {
+            $this->useFluxNavigation = $defaults;
+
+            return $this;
+        }
+
+        $this->useFluxNavigation = array_merge($defaults, $config);
+
+        return $this;
+    }
+
     public function getScopeClass(): ?string
     {
         return $this->scopeClass;
@@ -195,6 +234,20 @@ class FilamentFluxPlugin implements Plugin
         return array_keys(array_filter($this->useEverywhere, fn (bool $on): bool => $on));
     }
 
+    /**
+     * Slugs of navigation areas overridden.
+     *
+     * @return array<int, string>
+     */
+    public function getActiveNavigationOverrides(): array
+    {
+        if ($this->useFluxNavigation === null) {
+            return [];
+        }
+
+        return array_keys(array_filter($this->useFluxNavigation, fn (bool $on): bool => $on));
+    }
+
     protected function applyContainerBindings(): void
     {
         if ($this->useEverywhere === null) {
@@ -213,6 +266,33 @@ class FilamentFluxPlugin implements Plugin
             }
 
             app()->bind($binding['from'], $binding['to']);
+        }
+    }
+
+    protected function applyNavigationOverrides(): void
+    {
+        if ($this->useFluxNavigation === null) {
+            return;
+        }
+
+        $base = __DIR__.'/../resources/views/panels-overrides';
+
+        // Each area lives in its own subdirectory containing only the views
+        // we want to intercept. View::prependNamespace adds them to the
+        // search path for `filament-panels::*`; missing files fall back to
+        // the vendor copies automatically.
+        foreach ($this->useFluxNavigation as $area => $enabled) {
+            if (! $enabled) {
+                continue;
+            }
+
+            $path = realpath("{$base}/{$area}");
+
+            if ($path === false) {
+                continue;
+            }
+
+            View::prependNamespace('filament-panels', $path);
         }
     }
 }
