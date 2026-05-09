@@ -8,10 +8,17 @@ it('returns no active navigation overrides by default', function () {
     expect(FilamentFluxPlugin::make()->getActiveNavigationOverrides())->toBe([]);
 });
 
-it('useFluxNavigation(true) enables both sidebar and topbar', function () {
+it('useFluxNavigation(true) enables sidebar+topbar but not shell', function () {
     $plugin = FilamentFluxPlugin::make()->useFluxNavigation();
 
     expect($plugin->getActiveNavigationOverrides())->toMatchArray(['sidebar', 'topbar']);
+    expect($plugin->getActiveNavigationOverrides())->not->toContain('shell');
+});
+
+it('useFluxNavigation([shell => true]) enables full shell override', function () {
+    $plugin = FilamentFluxPlugin::make()->useFluxNavigation(['shell' => true]);
+
+    expect($plugin->getActiveNavigationOverrides())->toContain('shell');
 });
 
 it('useFluxNavigation(false) clears the overrides', function () {
@@ -61,4 +68,28 @@ it('does not register override paths when navigation is off', function () {
     $joined = implode("\n", $hints['filament-panels'] ?? []);
 
     expect($joined)->not->toContain('panels-overrides');
+});
+
+it('prepends the shell path when the shell toggle is enabled', function () {
+    FilamentFluxPlugin::make()
+        ->useFluxNavigation(['shell' => true])
+        ->register(Panel::make()->id('nav-test')->path('nav-test'));
+
+    $factory = View::getFinder();
+    $hints = $factory->getHints();
+    $joined = implode("\n", $hints['filament-panels'] ?? []);
+
+    expect($joined)->toContain('panels-overrides'.DIRECTORY_SEPARATOR.'shell');
+});
+
+it('useFluxNavigation(array) keeps shell off unless explicitly enabled', function () {
+    FilamentFluxPlugin::make()
+        ->useFluxNavigation(['sidebar' => true])
+        ->register(Panel::make()->id('nav-test')->path('nav-test'));
+
+    $factory = View::getFinder();
+    $hints = $factory->getHints();
+    $joined = implode("\n", $hints['filament-panels'] ?? []);
+
+    expect($joined)->not->toContain('panels-overrides'.DIRECTORY_SEPARATOR.'shell');
 });

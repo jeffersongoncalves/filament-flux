@@ -112,10 +112,23 @@ Granular per-area opt-out:
 FilamentFluxPlugin::make()->useFluxNavigation([
     'sidebar' => true,
     'topbar' => false,    // keep Filament's topbar items as-is
+    'shell' => true,      // see "Full panel shell" below
 ]);
 ```
 
-The plugin prepends per-area hint paths to the `filament-panels` view namespace; missing files fall back to the vendor copies, so upgrading Filament minors stays safe as long as the overridden views (sidebar `item`, sidebar `group`, topbar `item`) still match the prop signatures of the active Filament minor.
+The plugin prepends per-area hint paths to the `filament-panels` view namespace; missing files fall back to the vendor copies, so upgrading Filament minors stays safe as long as the overridden views (sidebar `item`, sidebar `group`, topbar `item`, layout `index`, livewire `sidebar`) still match the prop signatures of the active Filament minor.
+
+#### Full panel shell (`shell` toggle)
+
+Off by default — the `shell` slug rewrites the panel's outer `<aside>` shell into `<flux:sidebar>` and wraps the main content in `<flux:main>`, including the sidebar Livewire view. Header, logo, tenant menu, global search, render hooks and footer behaviors are all preserved.
+
+```php
+FilamentFluxPlugin::make()->useFluxNavigation([
+    'shell' => true,
+]);
+```
+
+This is the most invasive override — opt in only after you've confirmed your panel's render hooks and customizations still render correctly. The Filament version that ships with each `filament-flux` release is the one that's been verified.
 
 ## Form Fields
 
