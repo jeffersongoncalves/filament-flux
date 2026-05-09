@@ -25,7 +25,7 @@ it('fails when theme.css is missing', function () {
     expect(Artisan::output())->toContain('Theme file not found');
 });
 
-it('patches theme.css with both @import lines', function () {
+it('patches theme.css with both @import and @source lines', function () {
     File::put($this->themePath, "@import \"tailwindcss\";\n\n@theme {\n}\n");
 
     $exit = Artisan::call('filament-flux:install', [
@@ -38,7 +38,9 @@ it('patches theme.css with both @import lines', function () {
     $contents = File::get($this->themePath);
     expect($contents)
         ->toContain('@import "../../../../vendor/livewire/flux/dist/flux.css";')
-        ->toContain('@import "../../../../vendor/jeffersongoncalves/filament-flux/dist/filament-flux.css";');
+        ->toContain('@import "../../../../vendor/jeffersongoncalves/filament-flux/dist/filament-flux.css";')
+        ->toContain('@source "../../../../vendor/livewire/flux/stubs/resources/views/flux/**/*";')
+        ->toContain('@source "../../../../vendor/jeffersongoncalves/filament-flux/resources/views/components/**/*";');
 });
 
 it('is idempotent — running twice does not duplicate', function () {
@@ -57,4 +59,6 @@ it('is idempotent — running twice does not duplicate', function () {
     $contents = File::get($this->themePath);
     expect(substr_count($contents, '@import "../../../../vendor/livewire/flux/dist/flux.css";'))->toBe(1);
     expect(substr_count($contents, '@import "../../../../vendor/jeffersongoncalves/filament-flux/dist/filament-flux.css";'))->toBe(1);
+    expect(substr_count($contents, '@source "../../../../vendor/livewire/flux/stubs/resources/views/flux/**/*";'))->toBe(1);
+    expect(substr_count($contents, '@source "../../../../vendor/jeffersongoncalves/filament-flux/resources/views/components/**/*";'))->toBe(1);
 });

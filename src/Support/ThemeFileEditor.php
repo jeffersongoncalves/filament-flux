@@ -14,6 +14,34 @@ class ThemeFileEditor
      */
     public function addImportLines(string $themePath, array $importPaths): bool
     {
+        return $this->addDirectiveLines($themePath, '@import', $importPaths);
+    }
+
+    /**
+     * Idempotently insert one or more @source directives into a Tailwind v4 theme file.
+     *
+     * @param  array<int, string>  $sourcePaths
+     */
+    public function addSourceLines(string $themePath, array $sourcePaths): bool
+    {
+        return $this->addDirectiveLines($themePath, '@source', $sourcePaths);
+    }
+
+    public function hasImport(string $contents, string $path): bool
+    {
+        return $this->hasDirective($contents, '@import', $path);
+    }
+
+    public function hasSource(string $contents, string $path): bool
+    {
+        return $this->hasDirective($contents, '@source', $path);
+    }
+
+    /**
+     * @param  array<int, string>  $paths
+     */
+    protected function addDirectiveLines(string $themePath, string $directive, array $paths): bool
+    {
         if (! File::exists($themePath)) {
             throw new \RuntimeException("Theme file not found: {$themePath}");
         }
@@ -22,8 +50,8 @@ class ThemeFileEditor
         $original = $contents;
 
         $missing = array_filter(
-            $importPaths,
-            fn (string $path): bool => ! $this->hasImport($contents, $path),
+            $paths,
+            fn (string $path): bool => ! $this->hasDirective($contents, $directive, $path),
         );
 
         if (empty($missing)) {
@@ -31,7 +59,7 @@ class ThemeFileEditor
         }
 
         $insertion = collect($missing)
-            ->map(fn (string $path): string => "@import \"{$path}\";")
+            ->map(fn (string $path): string => "{$directive} \"{$path}\";")
             ->implode("\n");
 
         $contents = $this->insertAfterAnchor($contents, $insertion);
@@ -45,11 +73,12 @@ class ThemeFileEditor
         return true;
     }
 
-    public function hasImport(string $contents, string $path): bool
+    protected function hasDirective(string $contents, string $directive, string $path): bool
     {
-        $escaped = preg_quote($path, '/');
+        $escapedDirective = preg_quote($directive, '/');
+        $escapedPath = preg_quote($path, '/');
 
-        return (bool) preg_match("/@import\s+['\"]".$escaped."['\"]/", $contents);
+        return (bool) preg_match("/{$escapedDirective}\s+['\"]".$escapedPath."['\"]/", $contents);
     }
 
     protected function insertAfterAnchor(string $contents, string $insertion): string

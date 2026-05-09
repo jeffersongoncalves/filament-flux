@@ -7,6 +7,8 @@
 
 @source "../../../../app/Filament";
 @source "../../../../resources/views/filament";
+@source "../../../../vendor/livewire/flux/stubs/resources/views/flux/**/*";
+@source "../../../../vendor/jeffersongoncalves/filament-flux/resources/views/components/**/*";
 
 @custom-variant dark (&:where(.dark, .dark *));
 

@@ -87,3 +87,28 @@ it('only adds missing entries when some already exist', function () {
     expect(substr_count($contents, '@import "../existing.css";'))->toBe(1);
     expect($contents)->toContain('@import "../new-one.css";');
 });
+
+it('inserts @source directives idempotently', function () {
+    File::put($this->themePath, "@import \"tailwindcss\";\n");
+
+    $first = $this->editor->addSourceLines($this->themePath, [
+        '../../../../vendor/livewire/flux/stubs/resources/views/flux/**/*',
+    ]);
+
+    $second = $this->editor->addSourceLines($this->themePath, [
+        '../../../../vendor/livewire/flux/stubs/resources/views/flux/**/*',
+    ]);
+
+    expect($first)->toBeTrue();
+    expect($second)->toBeFalse();
+
+    $contents = File::get($this->themePath);
+    expect(substr_count($contents, '@source "../../../../vendor/livewire/flux/stubs/resources/views/flux/**/*";'))->toBe(1);
+});
+
+it('hasSource detects an existing @source line', function () {
+    $contents = "@import \"tailwindcss\";\n@source '../views/flux/**/*';\n";
+
+    expect($this->editor->hasSource($contents, '../views/flux/**/*'))->toBeTrue();
+    expect($this->editor->hasSource($contents, '../missing'))->toBeFalse();
+});

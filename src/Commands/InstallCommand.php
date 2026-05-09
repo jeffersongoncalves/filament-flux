@@ -30,15 +30,20 @@ class InstallCommand extends Command
             return self::FAILURE;
         }
 
-        $modified = $editor->addImportLines($themePath, [
+        $importsAdded = $editor->addImportLines($themePath, [
             '../../../../vendor/livewire/flux/dist/flux.css',
             '../../../../vendor/jeffersongoncalves/filament-flux/dist/filament-flux.css',
         ]);
 
-        if ($modified) {
+        $sourcesAdded = $editor->addSourceLines($themePath, [
+            '../../../../vendor/livewire/flux/stubs/resources/views/flux/**/*',
+            '../../../../vendor/jeffersongoncalves/filament-flux/resources/views/components/**/*',
+        ]);
+
+        if ($importsAdded || $sourcesAdded) {
             $this->components->info("Patched {$themePath}");
         } else {
-            $this->components->info('theme.css already contains @source paths — nothing to do.');
+            $this->components->info('theme.css already contains the required directives — nothing to do.');
         }
 
         if (! $this->option('no-publish')) {
