@@ -157,18 +157,23 @@ FilamentFluxPlugin::make()->useFluxComponents([
 ]);
 ```
 
-H1 slugs (this release):
+Available slugs:
 
 | Slug | Filament view | Flux replacement |
 |---|---|---|
-| `badge` | `filament::components.badge` | `<flux:badge>` |
+| `badge` | `filament::components.badge` | `<flux:badge>` (color map: primary→blue, success→lime, warning→amber, danger→red, info→cyan, gray→zinc) |
 | `avatar` | `filament::components.avatar` | `<flux:avatar>` |
 | `icon` | `filament::components.icon` | `<flux:icon>` (falls back to native HTML for non-string icons) |
-| `iconButton` | `filament::components.icon-button` | `<flux:button square icon>` |
+| `iconButton` | `filament::components.icon-button` | `<flux:button square icon>` (icon HTML wrapped as slot for non-string icons) |
 | `link` | `filament::components.link` | `<flux:link>` |
-| `breadcrumbs` | `filament::components.breadcrumbs` | `<flux:breadcrumbs>` |
+| `breadcrumbs` | `filament::components.breadcrumbs` | `<flux:breadcrumbs>` + `<flux:breadcrumbs.item>` |
+| `callout` | `filament::components.callout` | `<flux:callout>` + `<flux:callout.text>` (variant mapped from color) |
+| `card` | `filament::components.card` | `<flux:card>` |
+| `fieldset` | `filament::components.fieldset` | `<flux:fieldset>` + `<flux:legend>` |
+| `section` | `filament::components.section` | `<flux:card>` with header via `<flux:heading>` + `<flux:text>`; collapsible/persist preserved via Alpine |
+| `dropdown` | `filament::components.dropdown` + `dropdown.list` + `dropdown.list.item` | `<flux:dropdown>` + `<flux:menu>` + `<flux:menu.item>` (Filament `placement` → flux `position`/`align`) |
 
-The plugin prepends per-slug hint paths to the `filament` view namespace; missing files fall back to vendor copies. Feature complexity (delete buttons on badges, key bindings, loading indicators in icon buttons) doesn't fully map to Flux primitives — disable a slug if you rely on the Filament-only affordances.
+The plugin prepends per-slug hint paths to the `filament` view namespace; missing files fall back to vendor copies. Feature complexity (delete buttons on badges, key bindings, loading indicators, deferred badges, form-tag dropdown items, `secondary`/`divided`/`aside` section variants) doesn't fully map to Flux primitives — disable a slug if you rely on the Filament-only affordances.
 
 #### Notifications and user menu
 

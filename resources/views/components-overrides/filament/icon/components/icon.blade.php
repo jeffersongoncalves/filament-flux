@@ -1,3 +1,7 @@
+@php
+    use Filament\Support\Enums\IconSize;
+@endphp
+
 @props([
     'alias' => null,
     'icon' => null,
@@ -5,6 +9,10 @@
 ])
 
 @php
+    if (filled($size) && ! ($size instanceof IconSize)) {
+        $size = IconSize::tryFrom((string) $size) ?? null;
+    }
+
     if (! is_string($icon)) {
         // Closures, BackedEnums (Heroicon::Sun) and HtmlString instances
         // — fall back to Filament's generator so the icon resolves correctly.

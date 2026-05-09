@@ -83,6 +83,11 @@ class FilamentFluxPlugin implements Plugin
         'iconButton' => ['namespace' => 'filament', 'path' => 'filament/icon-button'],
         'link' => ['namespace' => 'filament', 'path' => 'filament/link'],
         'breadcrumbs' => ['namespace' => 'filament', 'path' => 'filament/breadcrumbs'],
+        'callout' => ['namespace' => 'filament', 'path' => 'filament/callout'],
+        'card' => ['namespace' => 'filament', 'path' => 'filament/card'],
+        'fieldset' => ['namespace' => 'filament', 'path' => 'filament/fieldset'],
+        'section' => ['namespace' => 'filament', 'path' => 'filament/section'],
+        'dropdown' => ['namespace' => 'filament', 'path' => 'filament/dropdown'],
     ];
 
     /**

@@ -8,7 +8,7 @@ it('returns no active component overrides by default', function () {
     expect(FilamentFluxPlugin::make()->getActiveComponentOverrides())->toBe([]);
 });
 
-it('useFluxComponents(true) enables every H1 slug', function () {
+it('useFluxComponents(true) enables every registered slug', function () {
     $plugin = FilamentFluxPlugin::make()->useFluxComponents();
 
     expect($plugin->getActiveComponentOverrides())->toMatchArray([
@@ -18,6 +18,11 @@ it('useFluxComponents(true) enables every H1 slug', function () {
         'iconButton',
         'link',
         'breadcrumbs',
+        'callout',
+        'card',
+        'fieldset',
+        'section',
+        'dropdown',
     ]);
 });
 
@@ -71,4 +76,27 @@ it('uses the filament namespace (not filament-panels) for the prepend', function
     $hints = $factory->getHints();
 
     expect($hints)->toHaveKey('filament');
+});
+
+it('prepends paths for H2 wrapper slugs', function () {
+    FilamentFluxPlugin::make()
+        ->useFluxComponents([
+            'callout' => true,
+            'card' => true,
+            'fieldset' => true,
+            'section' => true,
+            'dropdown' => true,
+        ])
+        ->register(Panel::make()->id('comp-test')->path('comp-test'));
+
+    $factory = View::getFinder();
+    $hints = $factory->getHints();
+    $joined = implode("\n", $hints['filament'] ?? []);
+
+    expect($joined)
+        ->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament'.DIRECTORY_SEPARATOR.'callout')
+        ->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament'.DIRECTORY_SEPARATOR.'card')
+        ->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament'.DIRECTORY_SEPARATOR.'fieldset')
+        ->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament'.DIRECTORY_SEPARATOR.'section')
+        ->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament'.DIRECTORY_SEPARATOR.'dropdown');
 });
