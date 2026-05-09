@@ -1,18 +1,21 @@
 @php
     $statePath = $getStatePath();
     $bindKey = $applyStateBindingModifiers('wire:model');
+    $type = $getType();
+    $isPassword = $type === 'password';
+    $viewable = $isPassword && method_exists($field, 'isPasswordRevealable') && $field->isPasswordRevealable();
 
     $bag = new \Illuminate\View\ComponentAttributeBag(array_filter([
         $bindKey => $statePath,
-        'type' => $getType(),
+        'type' => $type,
         'placeholder' => $getPlaceholder(),
         'autocomplete' => $getAutocomplete(),
         'autocapitalize' => $getAutocapitalize(),
         'autofocus' => $isAutofocused() ? 'autofocus' : null,
         'inputmode' => $getInputMode(),
         'step' => $getStep(),
-        'min' => $getMinValue(),
-        'max' => $getMaxValue(),
+        'min' => ($isPassword || $type === 'text' || $type === 'email' || $type === 'tel' || $type === 'url') ? null : $getMinValue(),
+        'max' => ($isPassword || $type === 'text' || $type === 'email' || $type === 'tel' || $type === 'url') ? null : $getMaxValue(),
         'minlength' => $getMinLength(),
         'maxlength' => $getMaxLength(),
         'icon' => $getFluxIcon(),
@@ -23,7 +26,7 @@
         'kbd' => $getFluxKbd(),
         'clearable' => $isFluxClearable() ? 'true' : null,
         'copyable' => $isFluxCopyable() ? 'true' : null,
-        'viewable' => $isPasswordRevealable() ? 'true' : null,
+        'viewable' => $viewable ? 'true' : null,
         'disabled' => $isDisabled() ? 'true' : null,
         'readonly' => $isReadOnly() ? 'true' : null,
         'required' => $isRequired() ? 'true' : null,
