@@ -4,6 +4,41 @@ All notable changes to `filament-flux` will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.3.0 - 2026-05-09
+
+### Highlights
+
+#### `useFluxNavigation(['shell' => true])` — full Flux panel shell
+
+Off by default. When the new `shell` slug is opted in, the plugin replaces two more Filament views to render the panel's structural shell with Flux primitives:
+
+- `filament-panels::livewire.sidebar` — the panel's `<aside class="fi-sidebar">` becomes `<flux:sidebar collapsible sticky>` with `<flux:sidebar.header>`, `<flux:navlist>` and `<flux:spacer>` wrappers. Tenant menu, global search, render hooks and the user/notifications footer are preserved.
+- `filament-panels::components.layout.index` — the inner `<main>` element becomes `<x-flux::main>`. Render hooks (`CONTENT_*`, `FOOTER`, `LAYOUT_*`) keep firing in the same positions.
+
+```php
+FilamentFluxPlugin::make()->useFluxNavigation([
+    'sidebar' => true,    // sidebar item/group → flux:navlist (already in 1.2.0)
+    'topbar' => true,     // topbar item → flux:navbar.item (already in 1.2.0)
+    'shell' => true,      // NEW: panel shell → flux:sidebar + flux:main
+]);
+
+```
+The default `useFluxNavigation()` call (no args) still ships with `shell => false` so panels can adopt the lighter sidebar/topbar item overrides without touching the structural shell.
+
+### Compatibility
+
+| Filament | Laravel | PHP | Livewire | Flux |
+|---|---|---|---|---|
+| ^5.0 | ^11 / ^12 / ^13 | ^8.2 | ^4.0 | ^2.14 |
+
+### Upgrading from 1.2.0
+
+Drop-in. Existing `useFluxNavigation()` calls keep the same behavior because `shell` defaults to false.
+
+### Roadmap
+
+- `1.4.0` — Fase G3: replace Filament notifications with `<flux:toast>`, opt-in modal/theme switcher overrides.
+
 ## 1.2.0 - 2026-05-09
 
 ### Highlights
@@ -15,6 +50,7 @@ Sidebar groups and items render as `<flux:navlist.group>` / `<flux:navlist.item>
 ```php
 FilamentFluxPlugin::make()->useFluxNavigation();
 
+
 ```
 Granular per-area opt-out:
 
@@ -23,6 +59,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
     'sidebar' => true,
     'topbar' => false,    // keep Filament's topbar items as-is
 ]);
+
 
 ```
 #### Implementation
@@ -53,6 +90,7 @@ Existing Resources keep calling `TextInput::make()`, `Select::make()`, etc. — 
 FilamentFluxPlugin::make()->useEverywhere();
 
 
+
 ```
 Granular per-field opt-out:
 
@@ -61,6 +99,7 @@ FilamentFluxPlugin::make()->useEverywhere([
     'select' => false,    // keep Filament's <select> with client-side searchable, etc.
     'otp' => false,
 ]);
+
 
 
 ```
@@ -149,6 +188,7 @@ npm run build
 
 
 
+
 ```
 ```php
 use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
@@ -156,6 +196,7 @@ use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
 return $panel->plugins([
     FilamentFluxPlugin::make(),
 ]);
+
 
 
 
