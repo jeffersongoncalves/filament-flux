@@ -4,6 +4,54 @@ All notable changes to `filament-flux` will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.6.0 - 2026-05-09
+
+### Highlights
+
+#### Phase H2 — wrappers (callout, card, fieldset, section, dropdown)
+
+Five new opt-in slugs for `useFluxComponents()`:
+
+```php
+FilamentFluxPlugin::make()->useFluxComponents([
+    'callout' => true,
+    'card' => true,
+    'fieldset' => true,
+    'section' => true,
+    'dropdown' => true,
+]);
+
+```
+| Slug | Filament view(s) | Flux replacement |
+|---|---|---|
+| `callout` | `filament::components.callout` | `<flux:callout>` + `<flux:callout.text>` (variant from color) |
+| `card` | `filament::components.card` | `<flux:card>` |
+| `fieldset` | `filament::components.fieldset` | `<flux:fieldset>` + `<flux:legend>` |
+| `section` | `filament::components.section.index` | `<flux:card>` with header via `<flux:heading>` + `<flux:text>`; collapsible/persist Alpine state preserved |
+| `dropdown` | `dropdown` + `dropdown.list` + `dropdown.list.item` | `<flux:dropdown>` + `<flux:menu>` + `<flux:menu.item>` |
+
+Filament `placement` is mapped to flux `position` + `align`. Form-tag dropdown items (CSRF + POST submit) fall back to Filament's native markup automatically.
+
+#### Fix: icon size normalization
+
+The `icon` and `iconButton` overrides now normalize a string `iconSize` into a `Filament\Support\Enums\IconSize` enum before delegating to `generate_icon_html()`. Resolves a TypeError when third-party packages pass icon sizes as plain strings.
+
+### Compatibility
+
+| Filament | Laravel | PHP | Livewire | Flux |
+|---|---|---|---|---|
+| ^5.0 | ^11 / ^12 / ^13 | ^8.2 | ^4.0 | ^2.14 |
+
+### Upgrading from 1.5.0
+
+Drop-in. New slugs ship off by default — existing `useFluxComponents()` calls keep their previous behavior. The `icon`/`iconButton` size fix is backward compatible.
+
+### Roadmap
+
+- `1.7.0` — Phase H3: action modal envelope + filament-actions:group
+- `1.8.0` — Phase H4: schema text/list overrides
+- `1.9.0` — Phase H5: stats overview widget
+
 ## 1.5.0 - 2026-05-09
 
 ### Highlights
@@ -24,6 +72,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
     'link' => true,
     'breadcrumbs' => true,
 ]);
+
 
 ```
 | Slug | Filament view | Flux replacement |
@@ -67,6 +116,7 @@ Off by default. When opted in, Filament's three-button theme switcher (`<x-filam
 FilamentFluxPlugin::make()->useFluxNavigation([
     'themeSwitcher' => true,
 ]);
+
 
 
 ```
@@ -113,6 +163,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
 
 
 
+
 ```
 The default `useFluxNavigation()` call (no args) still ships with `shell => false` so panels can adopt the lighter sidebar/topbar item overrides without touching the structural shell.
 
@@ -144,6 +195,7 @@ FilamentFluxPlugin::make()->useFluxNavigation();
 
 
 
+
 ```
 Granular per-area opt-out:
 
@@ -152,6 +204,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
     'sidebar' => true,
     'topbar' => false,    // keep Filament's topbar items as-is
 ]);
+
 
 
 
@@ -188,6 +241,7 @@ FilamentFluxPlugin::make()->useEverywhere();
 
 
 
+
 ```
 Granular per-field opt-out:
 
@@ -196,6 +250,7 @@ FilamentFluxPlugin::make()->useEverywhere([
     'select' => false,    // keep Filament's <select> with client-side searchable, etc.
     'otp' => false,
 ]);
+
 
 
 
@@ -290,6 +345,7 @@ npm run build
 
 
 
+
 ```
 ```php
 use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
@@ -297,6 +353,7 @@ use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
 return $panel->plugins([
     FilamentFluxPlugin::make(),
 ]);
+
 
 
 
