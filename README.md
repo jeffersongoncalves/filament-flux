@@ -10,7 +10,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/jeffersongoncalves/filament-flux.svg?style=flat-square)](https://packagist.org/packages/jeffersongoncalves/filament-flux)
 [![Tests](https://img.shields.io/github/actions/workflow/status/jeffersongoncalves/filament-flux/tests.yml?branch=1.x&label=tests&style=flat-square)](https://github.com/jeffersongoncalves/filament-flux/actions/workflows/tests.yml)
 [![PHPStan](https://img.shields.io/github/actions/workflow/status/jeffersongoncalves/filament-flux/phpstan.yml?branch=1.x&label=phpstan&style=flat-square)](https://github.com/jeffersongoncalves/filament-flux/actions/workflows/phpstan.yml)
-[![License](https://img.shields.io/packagist/l/jeffersongoncalves/filament-flux.svg?style=flat-square)](LICENSE.md)
+[![License](https://img.shields.io/github/license/jeffersongoncalves/filament-flux.svg?style=flat-square)](LICENSE.md)
 
 Filament v5 plugin exposing [Livewire Flux](https://fluxui.dev) UI components as native Form Fields, Table Columns, Infolist Entries, and Actions.
 
