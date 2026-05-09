@@ -4,6 +4,43 @@ All notable changes to `filament-flux` will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.2.0 - 2026-05-09
+
+### Highlights
+
+#### `useFluxNavigation()` — replace Filament's sidebar and topbar items with Flux
+
+Sidebar groups and items render as `<flux:navlist.group>` / `<flux:navlist.item>`. Topbar items render as `<flux:navbar.item>`. Filament's data layer (active state, badges, child items, Resource/Page registration, navigation groups) is preserved verbatim — only the markup changes.
+
+```php
+FilamentFluxPlugin::make()->useFluxNavigation();
+
+```
+Granular per-area opt-out:
+
+```php
+FilamentFluxPlugin::make()->useFluxNavigation([
+    'sidebar' => true,
+    'topbar' => false,    // keep Filament's topbar items as-is
+]);
+
+```
+#### Implementation
+
+Each area lives in its own subdirectory under `resources/views/panels-overrides/{sidebar,topbar}`. The toggle prepends the relevant directories to the `filament-panels` view namespace via `View::prependNamespace`.
+
+Missing files fall back to the vendor copies, so upgrading Filament minors stays safe as long as the overridden views (sidebar `item`, sidebar `group`, topbar `item`) match the prop signatures of the active Filament minor.
+
+#### Compatibility
+
+| Filament | Laravel | PHP | Livewire | Flux |
+|---|---|---|---|---|
+| ^5.0 | ^11 / ^12 / ^13 | ^8.2 | ^4.0 | ^2.14 |
+
+### Upgrading from 1.1.0
+
+Drop-in. No breaking changes. The new feature is fully opt-in via `useFluxNavigation()`.
+
 ## 1.1.0 - 2026-05-09
 
 ### Highlights
@@ -15,6 +52,7 @@ Existing Resources keep calling `TextInput::make()`, `Select::make()`, etc. — 
 ```php
 FilamentFluxPlugin::make()->useEverywhere();
 
+
 ```
 Granular per-field opt-out:
 
@@ -23,6 +61,7 @@ FilamentFluxPlugin::make()->useEverywhere([
     'select' => false,    // keep Filament's <select> with client-side searchable, etc.
     'otp' => false,
 ]);
+
 
 ```
 Eight bindings registered when enabled:
@@ -109,6 +148,7 @@ php artisan filament-flux:install --panel=admin
 npm run build
 
 
+
 ```
 ```php
 use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
@@ -116,6 +156,7 @@ use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
 return $panel->plugins([
     FilamentFluxPlugin::make(),
 ]);
+
 
 
 ```
