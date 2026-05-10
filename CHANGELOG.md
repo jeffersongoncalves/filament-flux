@@ -4,6 +4,27 @@ All notable changes to `filament-flux` will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.10.0 - 2026-05-10
+
+### Added
+
+- **Phase H6 — `notifications` Blade override.** New slug for `useFluxComponents()` swaps the `filament-notifications::notifications` Livewire view envelope for a Flux-native toast group:
+  - The outer `<div class="fi-no fi-align-{...}">` is replaced by `<x-flux::toast.group position="...">`,
+  - Each `Notification` Livewire object keeps rendering its own Filament-styled markup inside the group,
+  - Filament's `alignment` (Start | Center | End) + `verticalAlignment` (Start | Center | End) map to Flux's `"vertical horizontal"` position pair (vertical Start → `top`, otherwise `bottom`; horizontal Start → `start`, Center → `center`, otherwise → `end`),
+  - The broadcast-channel `EchoLoaded` script and the `fi-no fi-align-*` BEM classes are preserved so existing CSS and the Echo wiring keep working alongside the Flux skin.
+  
+
+### Usage
+
+```php
+FilamentFluxPlugin::make()->useFluxComponents([
+    'notifications' => true,
+]);
+
+```
+Disable the slug if you depend on the original Filament tray markup (custom CSS keyed off the wrapper element, third-party panels intercepting the inner `<div>` with their own JS, etc.).
+
 ## 1.9.9 - 2026-05-10
 
 ### Fixed
@@ -94,6 +115,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 Disable the slug if you depend on Filament-only stat affordances (array-tuple description colors, custom view per stat, etc.).
 
@@ -116,6 +138,7 @@ A new opt-in slug that targets a different Filament subpackage namespace, plus a
 FilamentFluxPlugin::make()->useFluxComponents([
     'schemaText' => true,
 ]);
+
 
 
 
@@ -178,6 +201,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
     'modalHeading' => true,
     'modalDescription' => true,
 ]);
+
 
 
 
@@ -259,6 +283,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 | Slug | Filament view(s) | Flux replacement |
 |---|---|---|
@@ -325,6 +350,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 | Slug | Filament view | Flux replacement |
 |---|---|---|
@@ -367,6 +393,7 @@ Off by default. When opted in, Filament's three-button theme switcher (`<x-filam
 FilamentFluxPlugin::make()->useFluxNavigation([
     'themeSwitcher' => true,
 ]);
+
 
 
 
@@ -441,6 +468,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
 
 
 
+
 ```
 The default `useFluxNavigation()` call (no args) still ships with `shell => false` so panels can adopt the lighter sidebar/topbar item overrides without touching the structural shell.
 
@@ -486,6 +514,7 @@ FilamentFluxPlugin::make()->useFluxNavigation();
 
 
 
+
 ```
 Granular per-area opt-out:
 
@@ -494,6 +523,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
     'sidebar' => true,
     'topbar' => false,    // keep Filament's topbar items as-is
 ]);
+
 
 
 
@@ -558,6 +588,7 @@ FilamentFluxPlugin::make()->useEverywhere();
 
 
 
+
 ```
 Granular per-field opt-out:
 
@@ -566,6 +597,7 @@ FilamentFluxPlugin::make()->useEverywhere([
     'select' => false,    // keep Filament's <select> with client-side searchable, etc.
     'otp' => false,
 ]);
+
 
 
 
@@ -688,6 +720,7 @@ npm run build
 
 
 
+
 ```
 ```php
 use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
@@ -695,6 +728,7 @@ use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
 return $panel->plugins([
     FilamentFluxPlugin::make(),
 ]);
+
 
 
 
