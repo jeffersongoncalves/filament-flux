@@ -4,6 +4,15 @@ All notable changes to `filament-flux` will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.9.8 - 2026-05-10
+
+### Fixed
+
+- **Two side-by-side buttons on `<x-filament::button labeled-from="...">` actions** (the panel account-widget Sign-out, dashboard sign-out widgets, etc.). Filament's `<x-filament::button :labeled-from="sm">` renders two siblings — an `<x-filament::icon-button>` followed by `<button class="fi-btn fi-labeled-from-sm">` — and relies on `.fi-btn.fi-labeled-from-{bp}` (hidden / `{bp}:inline-grid`) plus `.fi-icon-btn:has(+ .fi-btn.fi-labeled-from-{bp})` (`{bp}:hidden`) to keep only one visible per viewport. In Tailwind v4 builds where neither selector reaches the compiled stylesheet (Filament Boost defaults, custom `theme.css` starting fresh, missing `@source`s), both buttons render at once. The plugin stylesheet now expresses both halves directly for every breakpoint (`sm`, `md`, `lg`, `xl`, `2xl`), with `!important` on the icon-only side so it wins the cascade.
+  
+- **Visible color "lag" on every Flux button when the theme switches.** Re-applying `.fi-icon-btn` to the icon-button override (1.9.6) inherits Filament's `transition duration-75`, which animates the `var(--color-accent)` swap over 75 ms whenever Filament's theme switcher flips the `.dark` class. Cancel the transition on `[data-flux-button]` (and the same element when it also carries `.fi-icon-btn` / `.fi-btn`) so the new color paints in the same frame as the class flip — hover/focus styles still apply instantly.
+  
+
 ## 1.9.7 - 2026-05-10
 
 ### Fixed
@@ -77,6 +86,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 Disable the slug if you depend on Filament-only stat affordances (array-tuple description colors, custom view per stat, etc.).
 
@@ -99,6 +109,7 @@ A new opt-in slug that targets a different Filament subpackage namespace, plus a
 FilamentFluxPlugin::make()->useFluxComponents([
     'schemaText' => true,
 ]);
+
 
 
 
@@ -159,6 +170,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
     'modalHeading' => true,
     'modalDescription' => true,
 ]);
+
 
 
 
@@ -236,6 +248,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 | Slug | Filament view(s) | Flux replacement |
 |---|---|---|
@@ -300,6 +313,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 | Slug | Filament view | Flux replacement |
 |---|---|---|
@@ -342,6 +356,7 @@ Off by default. When opted in, Filament's three-button theme switcher (`<x-filam
 FilamentFluxPlugin::make()->useFluxNavigation([
     'themeSwitcher' => true,
 ]);
+
 
 
 
@@ -412,6 +427,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
 
 
 
+
 ```
 The default `useFluxNavigation()` call (no args) still ships with `shell => false` so panels can adopt the lighter sidebar/topbar item overrides without touching the structural shell.
 
@@ -455,6 +471,7 @@ FilamentFluxPlugin::make()->useFluxNavigation();
 
 
 
+
 ```
 Granular per-area opt-out:
 
@@ -463,6 +480,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
     'sidebar' => true,
     'topbar' => false,    // keep Filament's topbar items as-is
 ]);
+
 
 
 
@@ -523,6 +541,7 @@ FilamentFluxPlugin::make()->useEverywhere();
 
 
 
+
 ```
 Granular per-field opt-out:
 
@@ -531,6 +550,7 @@ FilamentFluxPlugin::make()->useEverywhere([
     'select' => false,    // keep Filament's <select> with client-side searchable, etc.
     'otp' => false,
 ]);
+
 
 
 
@@ -649,6 +669,7 @@ npm run build
 
 
 
+
 ```
 ```php
 use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
@@ -656,6 +677,7 @@ use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
 return $panel->plugins([
     FilamentFluxPlugin::make(),
 ]);
+
 
 
 
