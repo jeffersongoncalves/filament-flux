@@ -76,4 +76,56 @@
             document.addEventListener('livewire:navigated', attach);
         }, 0);
     });
+
+    // Theme-switch transition damper. Filament's theme switcher flips
+    // `<html>.dark` via Alpine; Flux primary buttons + Filament's
+    // `.fi-btn` / `.fi-icon-btn` carry a Tailwind `transition` so the
+    // accent CSS variable change animates over up to 150 ms after every
+    // toggle, surfacing as a visible color "lag". When the `dark`
+    // attribute on `<html>` toggles, inject a `* { transition: none
+    // !important }` style for one frame so the new color paints in the
+    // same frame as the class flip, then strip it so hover/focus
+    // transitions resume normally.
+    (function () {
+        if (typeof window === 'undefined' || ! window.MutationObserver) {
+            return;
+        }
+
+        let damperEl = null;
+        let cleanupHandle = null;
+
+        const installDamper = () => {
+            if (damperEl) return;
+
+            damperEl = document.createElement('style');
+            damperEl.setAttribute('data-filament-flux-theme-damper', '');
+            damperEl.appendChild(document.createTextNode(
+                '*, *::before, *::after { transition: none !important; animation-duration: 0s !important; }'
+            ));
+            document.head.appendChild(damperEl);
+
+            if (cleanupHandle) cancelAnimationFrame(cleanupHandle);
+            cleanupHandle = requestAnimationFrame(() => {
+                cleanupHandle = requestAnimationFrame(() => {
+                    if (! damperEl) return;
+                    damperEl.remove();
+                    damperEl = null;
+                });
+            });
+        };
+
+        const observer = new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    installDamper();
+                    return;
+                }
+            }
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class'],
+        });
+    })();
 </script>
