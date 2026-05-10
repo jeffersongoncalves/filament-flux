@@ -4,6 +4,13 @@ All notable changes to `filament-flux` will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.9.4 - 2026-05-10
+
+### Fixed
+
+- **`section` slug — ParseError on every page that uses Filament Sections.** The override rendered `<x-flux::card>` with inline `@if ($persistCollapsed) ... @else ... @endif` Blade directives sitting inside the `x-data` attribute value. Filament's upstream `<section>` element tolerates that because Blade's HTML parser compiles directives inside attribute strings, but Blade's anonymous-component parser leaves them as literal text — the leaked `@endif` then surfaces as `syntax error, unexpected token "endif", expecting end of file`. The Alpine payload (and every collapsible event handler) is now pre-built into a `ComponentAttributeBag` and passed to `<x-flux::card>` via `:attributes`, so the component tag only ever sees plain attribute strings.
+- **Mobile and desktop sidebar toggle buttons rendering simultaneously on desktop.** Filament's `lg:hidden` rule on `fi-topbar-close-sidebar-btn` is a single-class selector with the same specificity as Flux's `inline-flex` utility on `<flux:button>`, so a source-order race could leave both the mobile X and the desktop chevron visible at `>=lg`. Plugin CSS now forces `display: none !important` on the mobile open/close pair at `>=lg` and on the desktop collapse pair (and its container) at `<lg`, so the cascade stops mattering.
+
 ## 1.9.3 - 2026-05-10
 
 ### Fixed
@@ -47,6 +54,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 Disable the slug if you depend on Filament-only stat affordances (array-tuple description colors, custom view per stat, etc.).
 
@@ -69,6 +77,7 @@ A new opt-in slug that targets a different Filament subpackage namespace, plus a
 FilamentFluxPlugin::make()->useFluxComponents([
     'schemaText' => true,
 ]);
+
 
 
 
@@ -125,6 +134,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
     'modalHeading' => true,
     'modalDescription' => true,
 ]);
+
 
 
 
@@ -194,6 +204,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 | Slug | Filament view(s) | Flux replacement |
 |---|---|---|
@@ -254,6 +265,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 | Slug | Filament view | Flux replacement |
 |---|---|---|
@@ -296,6 +308,7 @@ Off by default. When opted in, Filament's three-button theme switcher (`<x-filam
 FilamentFluxPlugin::make()->useFluxNavigation([
     'themeSwitcher' => true,
 ]);
+
 
 
 
@@ -358,6 +371,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
 
 
 
+
 ```
 The default `useFluxNavigation()` call (no args) still ships with `shell => false` so panels can adopt the lighter sidebar/topbar item overrides without touching the structural shell.
 
@@ -397,6 +411,7 @@ FilamentFluxPlugin::make()->useFluxNavigation();
 
 
 
+
 ```
 Granular per-area opt-out:
 
@@ -405,6 +420,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
     'sidebar' => true,
     'topbar' => false,    // keep Filament's topbar items as-is
 ]);
+
 
 
 
@@ -457,6 +473,7 @@ FilamentFluxPlugin::make()->useEverywhere();
 
 
 
+
 ```
 Granular per-field opt-out:
 
@@ -465,6 +482,7 @@ FilamentFluxPlugin::make()->useEverywhere([
     'select' => false,    // keep Filament's <select> with client-side searchable, etc.
     'otp' => false,
 ]);
+
 
 
 
@@ -575,6 +593,7 @@ npm run build
 
 
 
+
 ```
 ```php
 use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
@@ -582,6 +601,7 @@ use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
 return $panel->plugins([
     FilamentFluxPlugin::make(),
 ]);
+
 
 
 
