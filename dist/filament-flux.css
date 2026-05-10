@@ -79,3 +79,36 @@
     inset-block-start: 1.25rem;
     inset-inline-end: 1.5rem;
 }
+
+/*
+ * Filament's topbar ships two pairs of toggle buttons that share the
+ * `$store.sidebar.isOpen` predicate:
+ *   - `fi-topbar-open-sidebar-btn` / `fi-topbar-close-sidebar-btn` are
+ *     the mobile-style hamburger / X (Filament hides them on desktop
+ *     via `lg:hidden`).
+ *   - `fi-topbar-open-collapse-sidebar-btn` /
+ *     `fi-topbar-close-collapse-sidebar-btn` are the desktop chevron
+ *     toggles (Filament shows them on desktop via `hidden lg:flex`).
+ *
+ * When the icon-button slug is on, those buttons render as
+ * `<flux:button>` whose `inline-flex` utility class can win over
+ * Filament's `lg:hidden` depending on stylesheet source order — so on
+ * desktop the panel ends up showing both the mobile X and the desktop
+ * chevron at the same time. Force the mobile pair off on >=lg and
+ * keep the desktop pair confined to >=lg with `!important` so the
+ * cascade stops mattering.
+ */
+@media (min-width: 1024px) {
+    .fi-topbar-open-sidebar-btn,
+    .fi-topbar-close-sidebar-btn {
+        display: none !important;
+    }
+}
+
+@media (max-width: 1023.98px) {
+    .fi-topbar-open-collapse-sidebar-btn,
+    .fi-topbar-close-collapse-sidebar-btn,
+    .fi-topbar-collapse-sidebar-btn-ctn {
+        display: none !important;
+    }
+}
