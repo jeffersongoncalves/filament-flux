@@ -29,6 +29,7 @@ it('useFluxComponents(true) enables every registered slug', function () {
         'schemaText',
         'statsCard',
         'notifications',
+        'pagination',
     ]);
 });
 
@@ -157,6 +158,18 @@ it('notifications override resolves the filament-notifications::notifications vi
     $resolved = View::getFinder()->find('filament-notifications::notifications');
 
     expect($resolved)->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament-notifications'.DIRECTORY_SEPARATOR.'notifications');
+});
+
+it('pagination slug uses the filament namespace', function () {
+    FilamentFluxPlugin::make()
+        ->useFluxComponents(['pagination' => true])
+        ->register(Panel::make()->id('comp-test')->path('comp-test'));
+
+    $factory = View::getFinder();
+    $hints = $factory->getHints();
+    $joined = implode("\n", $hints['filament'] ?? []);
+
+    expect($joined)->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament'.DIRECTORY_SEPARATOR.'pagination');
 });
 
 it('prepends paths for H2 wrapper slugs', function () {

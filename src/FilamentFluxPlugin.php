@@ -94,6 +94,7 @@ class FilamentFluxPlugin implements Plugin
         'schemaText' => ['namespace' => 'filament-schemas', 'path' => 'filament-schemas/schemaText'],
         'statsCard' => ['namespace' => 'filament-widgets', 'path' => 'filament-widgets/statsCard'],
         'notifications' => ['namespace' => 'filament-notifications', 'path' => 'filament-notifications/notifications'],
+        'pagination' => ['namespace' => 'filament', 'path' => 'filament/pagination'],
     ];
 
     /**

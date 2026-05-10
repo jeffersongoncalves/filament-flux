@@ -178,6 +178,7 @@ Available slugs:
 | `schemaText` | `filament-schemas::components.text` | `<flux:text>` (badge variant still delegates to `<x-filament::badge>`) |
 | `statsCard` | `filament-widgets::stats-overview-widget.stat` | `<flux:card>` + `<flux:heading size="xl">` + `<flux:subheading>` + `<flux:text>` (chart Alpine canvas + URL anchor preserved) |
 | `notifications` | `filament-notifications::notifications` | `<flux:toast.group>` envelope (Filament `alignment` + `verticalAlignment` mapped to Flux `position`); each `Notification` keeps its own Filament-styled markup inside the group |
+| `pagination` | `filament::components.pagination.index` | `<flux:pagination>` (drops Filament-only `pageOptions` per-page dropdown, `extremeLinks`, and cursor-paginator chevron special-casing — disable the slug if you rely on those) |
 
 The plugin prepends per-slug hint paths to the `filament`, `filament-schemas` (for `schemaText`), `filament-widgets` (for `statsCard`) and `filament-notifications` (for `notifications`) view namespaces; missing files fall back to vendor copies. Feature complexity (delete buttons on badges, key bindings, loading indicators, deferred badges, form-tag dropdown items, `secondary`/`divided`/`aside` section variants) doesn't fully map to Flux primitives — disable a slug if you rely on the Filament-only affordances.
 
