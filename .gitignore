@@ -15,3 +15,4 @@ phpstan-baseline.neon
 auth.json
 .claude
 art/*.svg
+/docs
