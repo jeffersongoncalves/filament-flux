@@ -4,6 +4,13 @@ All notable changes to `filament-flux` will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.9.3 - 2026-05-10
+
+### Fixed
+
+- **Shell sidebar collapse + duplicate topbar buttons.** When the panel uses `fullyCollapsibleOnDesktop()` and `useFluxNavigation(['shell' => true])` was on, the sidebar slid entirely off-screen instead of compacting to icons, and the topbar rendered both `fi-topbar-open-sidebar-btn` and `fi-topbar-close-collapse-sidebar-btn` at once. Shell now maps either Filament collapsibility intent (`collapsibleOnDesktop` and `fullyCollapsibleOnDesktop`) to Flux's compact mode: `<flux:sidebar>` opens with `collapsible="true"` so Flux owns desktop + mobile toggling, and the layout adds the `fi-body-has-sidebar-collapsible-on-desktop` body class whenever any collapse mode is active so Filament's upstream sidebar/topbar CSS stays aligned with the visual we ship.
+- **Modal close button on the wrong (leading) edge.** Filament's `.fi-modal-close-btn` pins to the trailing edge via `position: absolute; inset-inline-end`; Flux's `<flux:button>` injects a `relative` class with utility-layer specificity that, depending on stylesheet order, can win and leave the X stuck inside the header's flex flow on the leading edge. Plugin CSS now re-asserts `position: absolute !important`, `inset-block-start`, and `inset-inline-end` for both standard and slide-over modals so the X stays on the trailing edge regardless of source order.
+
 ## 1.9.2 - 2026-05-10
 
 ### Fixed
@@ -39,6 +46,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 Disable the slug if you depend on Filament-only stat affordances (array-tuple description colors, custom view per stat, etc.).
 
@@ -61,6 +69,7 @@ A new opt-in slug that targets a different Filament subpackage namespace, plus a
 FilamentFluxPlugin::make()->useFluxComponents([
     'schemaText' => true,
 ]);
+
 
 
 
@@ -116,6 +125,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
     'modalHeading' => true,
     'modalDescription' => true,
 ]);
+
 
 
 
@@ -183,6 +193,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 | Slug | Filament view(s) | Flux replacement |
 |---|---|---|
@@ -242,6 +253,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 | Slug | Filament view | Flux replacement |
 |---|---|---|
@@ -284,6 +296,7 @@ Off by default. When opted in, Filament's three-button theme switcher (`<x-filam
 FilamentFluxPlugin::make()->useFluxNavigation([
     'themeSwitcher' => true,
 ]);
+
 
 
 
@@ -344,6 +357,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
 
 
 
+
 ```
 The default `useFluxNavigation()` call (no args) still ships with `shell => false` so panels can adopt the lighter sidebar/topbar item overrides without touching the structural shell.
 
@@ -382,6 +396,7 @@ FilamentFluxPlugin::make()->useFluxNavigation();
 
 
 
+
 ```
 Granular per-area opt-out:
 
@@ -390,6 +405,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
     'sidebar' => true,
     'topbar' => false,    // keep Filament's topbar items as-is
 ]);
+
 
 
 
@@ -440,6 +456,7 @@ FilamentFluxPlugin::make()->useEverywhere();
 
 
 
+
 ```
 Granular per-field opt-out:
 
@@ -448,6 +465,7 @@ FilamentFluxPlugin::make()->useEverywhere([
     'select' => false,    // keep Filament's <select> with client-side searchable, etc.
     'otp' => false,
 ]);
+
 
 
 
@@ -556,6 +574,7 @@ npm run build
 
 
 
+
 ```
 ```php
 use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
@@ -563,6 +582,7 @@ use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
 return $panel->plugins([
     FilamentFluxPlugin::make(),
 ]);
+
 
 
 
