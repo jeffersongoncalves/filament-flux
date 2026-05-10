@@ -151,3 +151,97 @@
 [data-flux-button][disabled][type='submit'] > :not([data-flux-loading-indicator]) {
     opacity: 0;
 }
+
+/*
+ * Filament's `<x-filament::button :labeled-from="...">` renders TWO
+ * sibling buttons — `<x-filament::icon-button>` followed by the
+ * labeled `<button class="fi-btn fi-labeled-from-{breakpoint}">` — and
+ * relies on a paired CSS dance to keep only one visible per viewport:
+ *
+ *   - `.fi-btn.fi-labeled-from-{bp}` is `hidden`/`{bp}:inline-grid`
+ *     so the labeled twin shows from the breakpoint up.
+ *   - `.fi-icon-btn:has(+ .fi-btn.fi-labeled-from-{bp})` flips to
+ *     `{bp}:hidden` so the icon-only twin disappears from the
+ *     breakpoint up.
+ *
+ * In Tailwind v4 builds where neither of those rules made it into
+ * the compiled stylesheet (Filament Boost defaults, missing
+ * `@source`s, custom theme.css starting fresh), both buttons show at
+ * once and the panel ends up rendering the icon-only button right
+ * next to the labeled one. Re-express both halves directly so the
+ * deduplication works regardless of which utilities Tailwind picked up.
+ */
+.fi-btn.fi-labeled-from-sm,
+.fi-btn.fi-labeled-from-md,
+.fi-btn.fi-labeled-from-lg,
+.fi-btn.fi-labeled-from-xl,
+.fi-btn.fi-labeled-from-2xl {
+    display: none;
+}
+
+@media (min-width: 640px) {
+    .fi-btn.fi-labeled-from-sm {
+        display: inline-grid;
+    }
+
+    .fi-icon-btn:has(+ .fi-btn.fi-labeled-from-sm) {
+        display: none !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .fi-btn.fi-labeled-from-md {
+        display: inline-grid;
+    }
+
+    .fi-icon-btn:has(+ .fi-btn.fi-labeled-from-md) {
+        display: none !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    .fi-btn.fi-labeled-from-lg {
+        display: inline-grid;
+    }
+
+    .fi-icon-btn:has(+ .fi-btn.fi-labeled-from-lg) {
+        display: none !important;
+    }
+}
+
+@media (min-width: 1280px) {
+    .fi-btn.fi-labeled-from-xl {
+        display: inline-grid;
+    }
+
+    .fi-icon-btn:has(+ .fi-btn.fi-labeled-from-xl) {
+        display: none !important;
+    }
+}
+
+@media (min-width: 1536px) {
+    .fi-btn.fi-labeled-from-2xl {
+        display: inline-grid;
+    }
+
+    .fi-icon-btn:has(+ .fi-btn.fi-labeled-from-2xl) {
+        display: none !important;
+    }
+}
+
+/*
+ * The icon-button override re-applies Filament's `.fi-icon-btn` class
+ * (so the labeled-from de-duplication above keeps working). That class
+ * inherits `transition duration-75` from Filament's button stylesheet,
+ * which means the `var(--color-accent)` swap triggered by Filament's
+ * theme switcher animates over 75 ms — visible as a "lag" between the
+ * theme toggle and the new accent color settling on every Flux button
+ * on the page. Cancel the transition on flux buttons so the new color
+ * paints in the same frame as the `.dark` class flip; hover/focus
+ * styles still apply instantly which is fine for icon-only buttons.
+ */
+[data-flux-button],
+[data-flux-button].fi-icon-btn,
+[data-flux-button].fi-btn {
+    transition: none;
+}
