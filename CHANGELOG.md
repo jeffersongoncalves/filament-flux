@@ -4,6 +4,13 @@ All notable changes to `filament-flux` will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.9.6 - 2026-05-10
+
+### Fixed
+
+- **Sidebar collapsed on desktop with no way to expand it** (regression introduced by 1.9.4 + papered over by 1.9.5). 1.9.4 force-hid `fi-topbar-open-sidebar-btn` on `>=lg` to win over Flux's `inline-flex` cascade, which removed the only expand affordance left for panels using `fullyCollapsibleOnDesktop()` — the desktop chevron container is gated by Filament's `x-show="$store.sidebar.isOpen || $isSidebarCollapsibleOnDesktop"`, which evaluates `false` for fully-collapsible-only panels once the sidebar is closed (and the open-collapse chevron isn't even rendered without `collapsibleOnDesktop`). The plugin now uses `.fi-body`-scoped selectors (specificity 0,2,0) instead of `!important`, hides `fi-topbar-close-sidebar-btn` on `>=lg` unconditionally, but only hides `fi-topbar-open-sidebar-btn` on `>=lg` when the panel has `fi-body-has-sidebar-collapsible-on-desktop` *without* `fi-body-has-sidebar-fully-collapsible-on-desktop` — so `fullyCollapsibleOnDesktop()` panels keep the mobile-style hamburger as their desktop expand affordance.
+- **`labeledFrom()` actions rendered the icon-only and labeled twin at the same time.** The icon-button override stopped emitting the `fi-icon-btn` class that Filament's `<x-filament::icon-button>` template adds, so Filament's `.fi-icon-btn:has(+ .fi-btn.fi-labeled-from-{breakpoint})` selector no longer hid the icon-only twin next to a labeled action and panels showed both buttons. The override now re-adds `fi-icon-btn` to the flux:button class list so the upstream de-duplication kicks in again.
+
 ## 1.9.5 - 2026-05-10
 
 ### Fixed
@@ -62,6 +69,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 Disable the slug if you depend on Filament-only stat affordances (array-tuple description colors, custom view per stat, etc.).
 
@@ -84,6 +92,7 @@ A new opt-in slug that targets a different Filament subpackage namespace, plus a
 FilamentFluxPlugin::make()->useFluxComponents([
     'schemaText' => true,
 ]);
+
 
 
 
@@ -142,6 +151,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
     'modalHeading' => true,
     'modalDescription' => true,
 ]);
+
 
 
 
@@ -215,6 +225,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 | Slug | Filament view(s) | Flux replacement |
 |---|---|---|
@@ -277,6 +288,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 | Slug | Filament view | Flux replacement |
 |---|---|---|
@@ -319,6 +331,7 @@ Off by default. When opted in, Filament's three-button theme switcher (`<x-filam
 FilamentFluxPlugin::make()->useFluxNavigation([
     'themeSwitcher' => true,
 ]);
+
 
 
 
@@ -385,6 +398,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
 
 
 
+
 ```
 The default `useFluxNavigation()` call (no args) still ships with `shell => false` so panels can adopt the lighter sidebar/topbar item overrides without touching the structural shell.
 
@@ -426,6 +440,7 @@ FilamentFluxPlugin::make()->useFluxNavigation();
 
 
 
+
 ```
 Granular per-area opt-out:
 
@@ -434,6 +449,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
     'sidebar' => true,
     'topbar' => false,    // keep Filament's topbar items as-is
 ]);
+
 
 
 
@@ -490,6 +506,7 @@ FilamentFluxPlugin::make()->useEverywhere();
 
 
 
+
 ```
 Granular per-field opt-out:
 
@@ -498,6 +515,7 @@ FilamentFluxPlugin::make()->useEverywhere([
     'select' => false,    // keep Filament's <select> with client-side searchable, etc.
     'otp' => false,
 ]);
+
 
 
 
@@ -612,6 +630,7 @@ npm run build
 
 
 
+
 ```
 ```php
 use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
@@ -619,6 +638,7 @@ use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
 return $panel->plugins([
     FilamentFluxPlugin::make(),
 ]);
+
 
 
 
