@@ -45,3 +45,13 @@
 .filament-flux-scope [data-flux-control] {
     outline-color: transparent;
 }
+
+/*
+ * Filament's sidebar nav groups ship with `gap-y-7` to space top-level
+ * groups apart. Inside the Flux navlist that spacing reads as visual
+ * holes between sibling items, so collapse it back to zero and let
+ * `<flux:navlist>` own the rhythm.
+ */
+.fi-sidebar-nav-groups {
+    gap: 0 !important;
+}
