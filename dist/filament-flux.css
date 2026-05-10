@@ -55,3 +55,27 @@
 .fi-sidebar-nav-groups {
     gap: 0 !important;
 }
+
+/*
+ * Filament's modal close button is the first child of `.fi-modal-header`,
+ * which is a flexbox row — so the button only ends up on the trailing
+ * edge thanks to `position: absolute; inset-inline-end: 1.5rem;` from
+ * Filament's modal CSS. Flux's `<flux:button>` adds its own `relative`
+ * class with the same specificity Tailwind applies to `.absolute`, and
+ * with utility-layer ordering Flux's `relative` can win, leaving the X
+ * stuck inside the flex flow on the leading edge. Re-assert position +
+ * inset and bump specificity so the rule wins regardless of source order.
+ */
+.fi-modal .fi-modal-close-btn,
+.fi-modal-close-btn[data-flux-button] {
+    position: absolute !important;
+    inset-block-start: 1rem;
+    inset-inline-end: 1rem;
+    inset-inline-start: auto !important;
+}
+
+.fi-modal.fi-modal-slide-over .fi-modal-close-btn,
+.fi-modal-slide-over .fi-modal-close-btn[data-flux-button] {
+    inset-block-start: 1.25rem;
+    inset-inline-end: 1.5rem;
+}

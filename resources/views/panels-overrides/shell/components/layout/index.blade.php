@@ -6,6 +6,11 @@
     $hasTopbar = filament()->hasTopbar();
     $isSidebarCollapsibleOnDesktop = filament()->isSidebarCollapsibleOnDesktop();
     $isSidebarFullyCollapsibleOnDesktop = filament()->isSidebarFullyCollapsibleOnDesktop();
+    // Shell maps Filament's "fully collapsible" intent onto Flux's compact
+    // icon-only mode. Both Filament modes get the same body class so the
+    // upstream CSS keeps the sidebar sticky (not translated off-screen) and
+    // hides the redundant `fi-topbar-open-sidebar-btn` on desktop.
+    $isSidebarShellCollapsibleOnDesktop = $isSidebarCollapsibleOnDesktop || $isSidebarFullyCollapsibleOnDesktop;
     $hasTopNavigation = filament()->hasTopNavigation();
     $hasNavigation = filament()->hasNavigation();
     $renderHookScopes = $livewire?->getRenderHookScopes();
@@ -20,7 +25,7 @@
     :livewire="$livewire"
     @class([
         'fi-body-has-navigation' => $hasNavigation,
-        'fi-body-has-sidebar-collapsible-on-desktop' => $isSidebarCollapsibleOnDesktop,
+        'fi-body-has-sidebar-collapsible-on-desktop' => $isSidebarShellCollapsibleOnDesktop,
         'fi-body-has-sidebar-fully-collapsible-on-desktop' => $isSidebarFullyCollapsibleOnDesktop,
         'fi-body-has-topbar' => $hasTopbar,
         'fi-body-has-top-navigation' => $hasTopNavigation,

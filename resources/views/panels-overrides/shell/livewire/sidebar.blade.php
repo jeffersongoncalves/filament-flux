@@ -6,7 +6,11 @@
         $isSidebarFullyCollapsibleOnDesktop = filament()->isSidebarFullyCollapsibleOnDesktop();
         $hasNavigation = filament()->hasNavigation();
         $hasTopbar = filament()->hasTopbar();
-        $sidebarCollapsible = $isSidebarCollapsibleOnDesktop ? true : ($isSidebarFullyCollapsibleOnDesktop ? 'mobile' : null);
+        // Map both Filament collapsibility intents to Flux's compact mode
+        // (`collapsible="true"`). Flux's `mobile` value never collapses on
+        // desktop, so a panel configured with `fullyCollapsibleOnDesktop()`
+        // would lose the desktop toggle entirely. `true` enables both.
+        $sidebarCollapsible = ($isSidebarCollapsibleOnDesktop || $isSidebarFullyCollapsibleOnDesktop) ? true : null;
     @endphp
 
     <x-flux::sidebar
