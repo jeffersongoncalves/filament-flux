@@ -4,6 +4,59 @@ All notable changes to `filament-flux` will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.7.0 - 2026-05-10
+
+### Highlights
+
+#### Phase H3 — dropdown header + modal typography
+
+Three new opt-in slugs for `useFluxComponents()`:
+
+```php
+FilamentFluxPlugin::make()->useFluxComponents([
+    'dropdownHeader' => true,
+    'modalHeading' => true,
+    'modalDescription' => true,
+]);
+
+```
+| Slug | Filament view | Flux replacement |
+|---|---|---|
+| `dropdownHeader` | `filament::components.dropdown.header` | `<flux:heading size="sm">` with optional leading icon |
+| `modalHeading` | `filament::components.modal.heading` | `<flux:heading size="lg">` (envelope, events and Action machinery stay on Filament) |
+| `modalDescription` | `filament::components.modal.description` | `<flux:text>` |
+
+#### Wholesale modal swap intentionally deferred
+
+`<x-filament::modal>` is wired into:
+
+- `filamentModal` Alpine state (`isOpen`, `isTopmost`, autofocus, slideOver)
+- The `open-modal` / `close-modal` / `close-modal-quietly` event protocol with IDs
+- Action confirmation machinery (`->requiresConfirmation()` dispatches those events)
+- `<x-filament-actions::modals>` teleport wrapper
+
+Replacing it with `<flux:modal>` (different event protocol and state model) would break Action confirmation flows everywhere. The lighter typography swaps in this release land most of the visual benefit without breaking Action modals.
+
+#### Fix: icon helper SVG cast
+
+Resolves a `Object of class BladeUI\Icons\Svg could not be converted to string` error in the `icon` and `iconButton` overrides. `generate_icon_html()` returns `?Htmlable`; the views now go through `->toHtml()` before emitting the SVG instead of relying on `__toString()`.
+
+### Compatibility
+
+| Filament | Laravel | PHP | Livewire | Flux |
+|---|---|---|---|---|
+| ^5.0 | ^11 / ^12 / ^13 | ^8.2 | ^4.0 | ^2.14 |
+
+### Upgrading from 1.6.0
+
+Drop-in. New slugs ship off by default — existing `useFluxComponents()` calls keep their previous behavior. The icon/iconButton SVG fix is backward compatible.
+
+### Roadmap
+
+- `1.8.0` — Phase H4: schema text/list overrides
+- `1.9.0` — Phase H5: stats overview widget
+- `1.10.0` — Phase H6: notifications envelope
+
 ## 1.6.0 - 2026-05-09
 
 ### Highlights
@@ -20,6 +73,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
     'section' => true,
     'dropdown' => true,
 ]);
+
 
 ```
 | Slug | Filament view(s) | Flux replacement |
@@ -74,6 +128,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 ]);
 
 
+
 ```
 | Slug | Filament view | Flux replacement |
 |---|---|---|
@@ -116,6 +171,7 @@ Off by default. When opted in, Filament's three-button theme switcher (`<x-filam
 FilamentFluxPlugin::make()->useFluxNavigation([
     'themeSwitcher' => true,
 ]);
+
 
 
 
@@ -164,6 +220,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
 
 
 
+
 ```
 The default `useFluxNavigation()` call (no args) still ships with `shell => false` so panels can adopt the lighter sidebar/topbar item overrides without touching the structural shell.
 
@@ -196,6 +253,7 @@ FilamentFluxPlugin::make()->useFluxNavigation();
 
 
 
+
 ```
 Granular per-area opt-out:
 
@@ -204,6 +262,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
     'sidebar' => true,
     'topbar' => false,    // keep Filament's topbar items as-is
 ]);
+
 
 
 
@@ -242,6 +301,7 @@ FilamentFluxPlugin::make()->useEverywhere();
 
 
 
+
 ```
 Granular per-field opt-out:
 
@@ -250,6 +310,7 @@ FilamentFluxPlugin::make()->useEverywhere([
     'select' => false,    // keep Filament's <select> with client-side searchable, etc.
     'otp' => false,
 ]);
+
 
 
 
@@ -346,6 +407,7 @@ npm run build
 
 
 
+
 ```
 ```php
 use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
@@ -353,6 +415,7 @@ use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
 return $panel->plugins([
     FilamentFluxPlugin::make(),
 ]);
+
 
 
 
