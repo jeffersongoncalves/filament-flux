@@ -119,3 +119,35 @@
         display: none;
     }
 }
+
+/*
+ * Flux's `<flux:button>` template ships an always-rendered loading
+ * indicator overlay (`<div data-flux-loading-indicator class="...
+ * opacity-0">`) that's intended to fade in only when the button enters
+ * a loading state. The fade relies on the `opacity-0` utility being
+ * present in the compiled stylesheet — but only when the user's
+ * theme.css `@source`s `vendor/livewire/flux/stubs/...`. Many panels
+ * stop at `@source "tailwindcss"` and the Filament Boost configuration,
+ * so `opacity-0` gets purged and the spinner ends up rendered at full
+ * opacity on top of the real icon, surfacing as "two icons in the same
+ * button" complaints. Express the rule directly here so the spinner
+ * stays hidden until Flux/Livewire actually flips a loading attribute,
+ * regardless of which classes Tailwind picked up.
+ */
+[data-flux-button] [data-flux-loading-indicator] {
+    opacity: 0;
+    pointer-events: none;
+}
+
+[data-flux-button][data-loading] [data-flux-loading-indicator],
+[data-flux-button][data-flux-loading] [data-flux-loading-indicator],
+[data-flux-button][disabled][type='submit'] [data-flux-loading-indicator] {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+[data-flux-button][data-loading] > :not([data-flux-loading-indicator]),
+[data-flux-button][data-flux-loading] > :not([data-flux-loading-indicator]),
+[data-flux-button][disabled][type='submit'] > :not([data-flux-loading-indicator]) {
+    opacity: 0;
+}
