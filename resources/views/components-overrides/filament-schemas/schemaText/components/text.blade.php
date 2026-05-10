@@ -43,9 +43,25 @@
             default => null,
         };
 
+        $fluxPalette = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose'];
+
+        $fluxColor = match (true) {
+            ! is_string($color) => null,
+            in_array($color, $fluxPalette, true) => $color,
+            $color === 'primary' => 'blue',
+            $color === 'success' => 'lime',
+            $color === 'warning' => 'amber',
+            $color === 'danger' => 'red',
+            $color === 'info' => 'cyan',
+            default => null,
+        };
+
+        $fluxVariant = (! $fluxColor && in_array($color, ['gray', 'zinc', 'slate', 'neutral', 'stone', 'secondary'], true)) ? 'subtle' : null;
+
         $bag = (new \Illuminate\View\ComponentAttributeBag(array_filter([
             'size' => $fluxSize,
-            'color' => $color,
+            'color' => $fluxColor,
+            'variant' => $fluxVariant,
         ], fn ($v) => $v !== null && $v !== '')))
             ->merge($getExtraAttributes(), escape: false)
             ->class([
