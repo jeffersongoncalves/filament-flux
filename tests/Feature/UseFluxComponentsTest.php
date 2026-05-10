@@ -27,6 +27,7 @@ it('useFluxComponents(true) enables every registered slug', function () {
         'modalHeading',
         'modalDescription',
         'schemaText',
+        'statsCard',
     ]);
 });
 
@@ -111,6 +112,28 @@ it('prepends paths for H3 typography/header slugs', function () {
         ->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament'.DIRECTORY_SEPARATOR.'dropdown-header')
         ->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament'.DIRECTORY_SEPARATOR.'modal-heading')
         ->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament'.DIRECTORY_SEPARATOR.'modal-description');
+});
+
+it('statsCard slug uses the filament-widgets namespace', function () {
+    FilamentFluxPlugin::make()
+        ->useFluxComponents(['statsCard' => true])
+        ->register(Panel::make()->id('comp-test')->path('comp-test'));
+
+    $factory = View::getFinder();
+    $hints = $factory->getHints();
+    $joined = implode("\n", $hints['filament-widgets'] ?? []);
+
+    expect($joined)->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament-widgets'.DIRECTORY_SEPARATOR.'statsCard');
+});
+
+it('statsCard override resolves the stats-overview-widget.stat view', function () {
+    FilamentFluxPlugin::make()
+        ->useFluxComponents(['statsCard' => true])
+        ->register(Panel::make()->id('comp-test')->path('comp-test'));
+
+    $resolved = View::getFinder()->find('filament-widgets::stats-overview-widget.stat');
+
+    expect($resolved)->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament-widgets'.DIRECTORY_SEPARATOR.'statsCard');
 });
 
 it('prepends paths for H2 wrapper slugs', function () {

@@ -176,8 +176,9 @@ Available slugs:
 | `modalHeading` | `filament::components.modal.heading` | `<flux:heading size="lg">` (envelope, events and Action machinery stay on Filament) |
 | `modalDescription` | `filament::components.modal.description` | `<flux:text>` |
 | `schemaText` | `filament-schemas::components.text` | `<flux:text>` (badge variant still delegates to `<x-filament::badge>`) |
+| `statsCard` | `filament-widgets::stats-overview-widget.stat` | `<flux:card>` + `<flux:heading size="xl">` + `<flux:subheading>` + `<flux:text>` (chart Alpine canvas + URL anchor preserved) |
 
-The plugin prepends per-slug hint paths to the `filament` (and `filament-schemas` for `schemaText`) view namespace; missing files fall back to vendor copies. Feature complexity (delete buttons on badges, key bindings, loading indicators, deferred badges, form-tag dropdown items, `secondary`/`divided`/`aside` section variants) doesn't fully map to Flux primitives — disable a slug if you rely on the Filament-only affordances.
+The plugin prepends per-slug hint paths to the `filament`, `filament-schemas` (for `schemaText`) and `filament-widgets` (for `statsCard`) view namespaces; missing files fall back to vendor copies. Feature complexity (delete buttons on badges, key bindings, loading indicators, deferred badges, form-tag dropdown items, `secondary`/`divided`/`aside` section variants) doesn't fully map to Flux primitives — disable a slug if you rely on the Filament-only affordances.
 
 #### Mixed icon sets (Heroicons + Font Awesome / Tabler / Lucide / etc.)
 
