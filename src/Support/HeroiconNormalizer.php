@@ -73,6 +73,11 @@ class HeroiconNormalizer
         // Bare `heroicon-NAME` (no variant letter).
         $stripped = (string) preg_replace('/^heroicon-/', '', $stripped);
 
+        // Filament v5 Heroicon enum convention without the `heroicon-`
+        // prefix: `o-bars-3`, `s-cog`, `m-trash`, `c-bell`, `mini-...`,
+        // `micro-...`, `outline-...`, `solid-...`.
+        $stripped = (string) preg_replace('/^(?:o|s|c|m|mini|micro|outline|solid)-/', '', $stripped);
+
         return $stripped !== '' ? $stripped : null;
     }
 
@@ -90,10 +95,10 @@ class HeroiconNormalizer
         }
 
         return match (true) {
-            str_starts_with($icon, 'heroicon-s-'), str_starts_with($icon, 'heroicon-solid-') => 'solid',
-            str_starts_with($icon, 'heroicon-mini-'), str_starts_with($icon, 'heroicon-m-') => 'mini',
-            str_starts_with($icon, 'heroicon-micro-'), str_starts_with($icon, 'heroicon-c-') => 'micro',
-            str_starts_with($icon, 'heroicon-o-'), str_starts_with($icon, 'heroicon-outline-') => 'outline',
+            str_starts_with($icon, 'heroicon-s-'), str_starts_with($icon, 'heroicon-solid-'), str_starts_with($icon, 's-'), str_starts_with($icon, 'solid-') => 'solid',
+            str_starts_with($icon, 'heroicon-mini-'), str_starts_with($icon, 'heroicon-m-'), str_starts_with($icon, 'mini-'), str_starts_with($icon, 'm-') => 'mini',
+            str_starts_with($icon, 'heroicon-micro-'), str_starts_with($icon, 'heroicon-c-'), str_starts_with($icon, 'micro-'), str_starts_with($icon, 'c-') => 'micro',
+            str_starts_with($icon, 'heroicon-o-'), str_starts_with($icon, 'heroicon-outline-'), str_starts_with($icon, 'o-'), str_starts_with($icon, 'outline-') => 'outline',
             default => null,
         };
     }

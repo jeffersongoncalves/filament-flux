@@ -19,6 +19,17 @@ it('passes bare names through (assumes heroicon)', function () {
     expect(HeroiconNormalizer::name('star'))->toBe('star');
 });
 
+it('strips Filament v5 Heroicon enum prefixes (no heroicon- prefix)', function () {
+    expect(HeroiconNormalizer::name('o-bars-3'))->toBe('bars-3');
+    expect(HeroiconNormalizer::name('s-cog'))->toBe('cog');
+    expect(HeroiconNormalizer::name('m-trash'))->toBe('trash');
+    expect(HeroiconNormalizer::name('c-bell'))->toBe('bell');
+    expect(HeroiconNormalizer::name('mini-info'))->toBe('info');
+    expect(HeroiconNormalizer::name('micro-star'))->toBe('star');
+    expect(HeroiconNormalizer::name('outline-fire'))->toBe('fire');
+    expect(HeroiconNormalizer::name('solid-home'))->toBe('home');
+});
+
 it('returns null for non-heroicon icon sets', function () {
     expect(HeroiconNormalizer::name('fontawesome-brands-github'))->toBeNull();
     expect(HeroiconNormalizer::name('tabler-user'))->toBeNull();
@@ -48,6 +59,17 @@ it('resolves variant from heroicon prefix', function () {
     expect(HeroiconNormalizer::variant('heroicon-micro-star'))->toBe('micro');
     expect(HeroiconNormalizer::variant('heroicon-outline-star'))->toBe('outline');
     expect(HeroiconNormalizer::variant('heroicon-solid-star'))->toBe('solid');
+});
+
+it('resolves variant from Filament v5 enum prefix (no heroicon-)', function () {
+    expect(HeroiconNormalizer::variant('o-bars-3'))->toBe('outline');
+    expect(HeroiconNormalizer::variant('s-cog'))->toBe('solid');
+    expect(HeroiconNormalizer::variant('m-trash'))->toBe('mini');
+    expect(HeroiconNormalizer::variant('c-bell'))->toBe('micro');
+    expect(HeroiconNormalizer::variant('mini-info'))->toBe('mini');
+    expect(HeroiconNormalizer::variant('micro-star'))->toBe('micro');
+    expect(HeroiconNormalizer::variant('outline-fire'))->toBe('outline');
+    expect(HeroiconNormalizer::variant('solid-home'))->toBe('solid');
 });
 
 it('returns null variant for bare names and non-heroicon sets', function () {
