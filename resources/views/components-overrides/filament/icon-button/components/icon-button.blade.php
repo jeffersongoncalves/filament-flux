@@ -55,7 +55,8 @@
         default => 'ghost',
     };
 
-    $iconString = is_string($icon) ? $icon : null;
+    $iconString = \Jeffersongoncalves\FilamentFlux\Support\HeroiconNormalizer::name($icon);
+    $iconVariant = \Jeffersongoncalves\FilamentFlux\Support\HeroiconNormalizer::variant($icon);
 @endphp
 
 @if ($iconString === null)

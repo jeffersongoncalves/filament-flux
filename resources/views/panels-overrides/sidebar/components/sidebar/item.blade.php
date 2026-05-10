@@ -19,13 +19,23 @@
 
 @php
     $resolvedIcon = ($active && $activeIcon) ? $activeIcon : $icon;
-    $iconString = is_string($resolvedIcon) ? $resolvedIcon : null;
+    $iconString = \Jeffersongoncalves\FilamentFlux\Support\HeroiconNormalizer::name($resolvedIcon);
+    $iconVariant = \Jeffersongoncalves\FilamentFlux\Support\HeroiconNormalizer::variant($resolvedIcon);
+
+    // Non-heroicon sets (Font Awesome, Tabler, etc.) — pre-render as HtmlString.
+    // <flux:navlist.item> accepts an Htmlable for $icon and renders it inline.
+    $iconHtml = null;
+    if ($iconString === null && filled($resolvedIcon)) {
+        $generated = \Filament\Support\generate_icon_html($resolvedIcon);
+        $iconHtml = $generated ? new \Illuminate\Support\HtmlString($generated->toHtml()) : null;
+    }
 
     $bag = new \Illuminate\View\ComponentAttributeBag(array_filter([
         'href' => $url,
         'target' => ($url && $shouldOpenUrlInNewTab) ? '_blank' : null,
         'wire:current' => $active ? 'true' : null,
-        'icon' => $iconString,
+        'icon' => $iconString ?? $iconHtml,
+        'icon:variant' => $iconVariant,
         'badge' => $badge,
         'badge-color' => $badgeColor,
         'badge:tooltip' => $badgeTooltip,

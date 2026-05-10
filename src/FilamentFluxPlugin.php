@@ -91,6 +91,7 @@ class FilamentFluxPlugin implements Plugin
         'dropdownHeader' => ['namespace' => 'filament', 'path' => 'filament/dropdown-header'],
         'modalHeading' => ['namespace' => 'filament', 'path' => 'filament/modal-heading'],
         'modalDescription' => ['namespace' => 'filament', 'path' => 'filament/modal-description'],
+        'schemaText' => ['namespace' => 'filament-schemas', 'path' => 'filament-schemas/schemaText'],
     ];
 
     /**

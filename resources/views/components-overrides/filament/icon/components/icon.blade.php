@@ -13,17 +13,22 @@
         $size = IconSize::tryFrom((string) $size) ?? null;
     }
 
-    if (! is_string($icon)) {
-        // Closures, BackedEnums (Heroicon::Sun) and HtmlString instances
-        // — fall back to Filament's generator so the icon resolves correctly.
-        // The helper returns ?Htmlable; cast through toHtml() because some
-        // implementations (e.g. BladeUI\Icons\Svg) lack __toString().
+    $iconName = \Jeffersongoncalves\FilamentFlux\Support\HeroiconNormalizer::name($icon);
+    $iconVariant = \Jeffersongoncalves\FilamentFlux\Support\HeroiconNormalizer::variant($icon);
+
+    if ($iconName === null) {
+        // Closures, HtmlString instances, or other non-resolvable inputs —
+        // fall back to Filament's generator. Cast through toHtml() because
+        // BladeUI\Icons\Svg lacks __toString().
         $generated = \Filament\Support\generate_icon_html($icon, $alias, $attributes, $size);
         echo $generated?->toHtml() ?? '';
         return;
     }
 
-    $bag = $attributes->merge(['icon' => $icon], escape: false);
+    $bag = $attributes->merge(array_filter([
+        'icon' => $iconName,
+        'variant' => $iconVariant,
+    ], fn ($v) => $v !== null), escape: false);
 @endphp
 
 <x-flux::icon :attributes="$bag" />

@@ -26,7 +26,20 @@ it('useFluxComponents(true) enables every registered slug', function () {
         'dropdownHeader',
         'modalHeading',
         'modalDescription',
+        'schemaText',
     ]);
+});
+
+it('schemaText slug uses the filament-schemas namespace', function () {
+    FilamentFluxPlugin::make()
+        ->useFluxComponents(['schemaText' => true])
+        ->register(Panel::make()->id('comp-test')->path('comp-test'));
+
+    $factory = View::getFinder();
+    $hints = $factory->getHints();
+    $joined = implode("\n", $hints['filament-schemas'] ?? []);
+
+    expect($joined)->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament-schemas'.DIRECTORY_SEPARATOR.'schemaText');
 });
 
 it('useFluxComponents(false) clears active overrides', function () {

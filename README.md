@@ -175,8 +175,13 @@ Available slugs:
 | `dropdownHeader` | `filament::components.dropdown.header` | `<flux:heading size="sm">` with optional leading icon |
 | `modalHeading` | `filament::components.modal.heading` | `<flux:heading size="lg">` (envelope, events and Action machinery stay on Filament) |
 | `modalDescription` | `filament::components.modal.description` | `<flux:text>` |
+| `schemaText` | `filament-schemas::components.text` | `<flux:text>` (badge variant still delegates to `<x-filament::badge>`) |
 
-The plugin prepends per-slug hint paths to the `filament` view namespace; missing files fall back to vendor copies. Feature complexity (delete buttons on badges, key bindings, loading indicators, deferred badges, form-tag dropdown items, `secondary`/`divided`/`aside` section variants) doesn't fully map to Flux primitives — disable a slug if you rely on the Filament-only affordances.
+The plugin prepends per-slug hint paths to the `filament` (and `filament-schemas` for `schemaText`) view namespace; missing files fall back to vendor copies. Feature complexity (delete buttons on badges, key bindings, loading indicators, deferred badges, form-tag dropdown items, `secondary`/`divided`/`aside` section variants) doesn't fully map to Flux primitives — disable a slug if you rely on the Filament-only affordances.
+
+#### Mixed icon sets (Heroicons + Font Awesome / Tabler / Lucide / etc.)
+
+Filament users frequently register icons from non-heroicon Blade Icons sets. The bundled `HeroiconNormalizer` detects known prefixes (`fontawesome-`, `tabler-`, `lucide-`, `phosphor-`, `mdi-`, `octicon-`, `bi-`, `feather-`, `simple-icons-`, `eos-icons-`, `bxl-`, `bxs-`, `bx-`, `gmdi-`, `css-gg-`, `fa[brs]?-`) and falls back to `\Filament\Support\generate_icon_html()` so those icons keep rendering through Blade Icons. Bare names (no prefix) and `heroicon-{o,s,m,c,mini,micro,outline,solid}-*` are routed through `<flux:icon>` with the correct `variant`.
 
 #### Notifications and user menu
 
