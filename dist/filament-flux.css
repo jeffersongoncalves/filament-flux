@@ -103,6 +103,22 @@
     .fi-topbar-close-sidebar-btn {
         display: none !important;
     }
+
+    /*
+     * Filament's topbar wraps the desktop collapse buttons in a
+     * container guarded by `x-show="$store.sidebar.isOpen || @js($isSidebarCollapsibleOnDesktop)"`.
+     * Plugins that opt into Flux's compact icon mode through
+     * `fullyCollapsibleOnDesktop()` evaluate that flag as `false`, so
+     * once the sidebar is collapsed Alpine inlines `display: none`
+     * onto the container and the user has no way to expand it again.
+     * Force the container `display: flex !important` on desktop so
+     * the inner open/close chevrons (each guarded by their own
+     * `x-show`) remain available regardless of the panel's
+     * collapsibility flavor.
+     */
+    .fi-topbar-collapse-sidebar-btn-ctn {
+        display: flex !important;
+    }
 }
 
 @media (max-width: 1023.98px) {
