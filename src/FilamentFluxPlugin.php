@@ -93,6 +93,7 @@ class FilamentFluxPlugin implements Plugin
         'modalDescription' => ['namespace' => 'filament', 'path' => 'filament/modal-description'],
         'schemaText' => ['namespace' => 'filament-schemas', 'path' => 'filament-schemas/schemaText'],
         'statsCard' => ['namespace' => 'filament-widgets', 'path' => 'filament-widgets/statsCard'],
+        'notifications' => ['namespace' => 'filament-notifications', 'path' => 'filament-notifications/notifications'],
     ];
 
     /**

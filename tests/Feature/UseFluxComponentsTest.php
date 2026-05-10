@@ -28,6 +28,7 @@ it('useFluxComponents(true) enables every registered slug', function () {
         'modalDescription',
         'schemaText',
         'statsCard',
+        'notifications',
     ]);
 });
 
@@ -134,6 +135,28 @@ it('statsCard override resolves the stats-overview-widget.stat view', function (
     $resolved = View::getFinder()->find('filament-widgets::stats-overview-widget.stat');
 
     expect($resolved)->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament-widgets'.DIRECTORY_SEPARATOR.'statsCard');
+});
+
+it('notifications slug uses the filament-notifications namespace', function () {
+    FilamentFluxPlugin::make()
+        ->useFluxComponents(['notifications' => true])
+        ->register(Panel::make()->id('comp-test')->path('comp-test'));
+
+    $factory = View::getFinder();
+    $hints = $factory->getHints();
+    $joined = implode("\n", $hints['filament-notifications'] ?? []);
+
+    expect($joined)->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament-notifications'.DIRECTORY_SEPARATOR.'notifications');
+});
+
+it('notifications override resolves the filament-notifications::notifications view', function () {
+    FilamentFluxPlugin::make()
+        ->useFluxComponents(['notifications' => true])
+        ->register(Panel::make()->id('comp-test')->path('comp-test'));
+
+    $resolved = View::getFinder()->find('filament-notifications::notifications');
+
+    expect($resolved)->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament-notifications'.DIRECTORY_SEPARATOR.'notifications');
 });
 
 it('prepends paths for H2 wrapper slugs', function () {
