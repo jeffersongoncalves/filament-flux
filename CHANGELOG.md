@@ -4,6 +4,12 @@ All notable changes to `filament-flux` will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.9.5 - 2026-05-10
+
+### Fixed
+
+- **No way to expand the sidebar after collapsing it on desktop.** Filament's topbar wraps the desktop collapse buttons in a container guarded by `x-show="$store.sidebar.isOpen || $isSidebarCollapsibleOnDesktop"`. Panels using `fullyCollapsibleOnDesktop()` (mapped to Flux compact mode in 1.9.3) evaluate the second flag as `false`, so once the sidebar collapsed Alpine inlined `display: none` on the container and the user lost the only way to expand it again — the mobile-style open button has been force-hidden at `>=lg` since 1.9.4. Plugin CSS now forces `display: flex !important` on `.fi-topbar-collapse-sidebar-btn-ctn` at `>=lg`, so the inner open/close chevrons — each still guarded by its own `x-show` — stay reachable regardless of the panel's collapsibility flavor.
+
 ## 1.9.4 - 2026-05-10
 
 ### Fixed
@@ -55,6 +61,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 Disable the slug if you depend on Filament-only stat affordances (array-tuple description colors, custom view per stat, etc.).
 
@@ -77,6 +84,7 @@ A new opt-in slug that targets a different Filament subpackage namespace, plus a
 FilamentFluxPlugin::make()->useFluxComponents([
     'schemaText' => true,
 ]);
+
 
 
 
@@ -134,6 +142,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
     'modalHeading' => true,
     'modalDescription' => true,
 ]);
+
 
 
 
@@ -205,6 +214,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 | Slug | Filament view(s) | Flux replacement |
 |---|---|---|
@@ -266,6 +276,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 | Slug | Filament view | Flux replacement |
 |---|---|---|
@@ -308,6 +319,7 @@ Off by default. When opted in, Filament's three-button theme switcher (`<x-filam
 FilamentFluxPlugin::make()->useFluxNavigation([
     'themeSwitcher' => true,
 ]);
+
 
 
 
@@ -372,6 +384,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
 
 
 
+
 ```
 The default `useFluxNavigation()` call (no args) still ships with `shell => false` so panels can adopt the lighter sidebar/topbar item overrides without touching the structural shell.
 
@@ -412,6 +425,7 @@ FilamentFluxPlugin::make()->useFluxNavigation();
 
 
 
+
 ```
 Granular per-area opt-out:
 
@@ -420,6 +434,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
     'sidebar' => true,
     'topbar' => false,    // keep Filament's topbar items as-is
 ]);
+
 
 
 
@@ -474,6 +489,7 @@ FilamentFluxPlugin::make()->useEverywhere();
 
 
 
+
 ```
 Granular per-field opt-out:
 
@@ -482,6 +498,7 @@ FilamentFluxPlugin::make()->useEverywhere([
     'select' => false,    // keep Filament's <select> with client-side searchable, etc.
     'otp' => false,
 ]);
+
 
 
 
@@ -594,6 +611,7 @@ npm run build
 
 
 
+
 ```
 ```php
 use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
@@ -601,6 +619,7 @@ use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
 return $panel->plugins([
     FilamentFluxPlugin::make(),
 ]);
+
 
 
 
