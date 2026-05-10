@@ -4,6 +4,55 @@ All notable changes to `filament-flux` will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.8.0 - 2026-05-10
+
+### Highlights
+
+#### Phase H4 — schemaText slug + HeroiconNormalizer for mixed icon sets
+
+A new opt-in slug that targets a different Filament subpackage namespace, plus a normalizer that bridges Filament's Blade Icons naming with Flux's heroicon-only component registry.
+
+```php
+FilamentFluxPlugin::make()->useFluxComponents([
+    'schemaText' => true,
+]);
+
+```
+| Slug | Filament view | Flux replacement |
+|---|---|---|
+| `schemaText` | `filament-schemas::components.text` | `<flux:text>` (badge variant still delegates to `<x-filament::badge>`) |
+
+This is the first slug to target the `filament-schemas` view namespace; previous slugs touched `filament`.
+
+#### `HeroiconNormalizer` — mixed icon sets
+
+Filament users frequently register icons from non-heroicon Blade Icons sets. The bundled normalizer detects known prefixes and routes accordingly:
+
+- `heroicon-{o,s,m,c,mini,micro,outline,solid}-*` → bare name + Flux `variant`
+- bare names (no prefix) → assumed heroicon
+- `fontawesome-`, `tabler-`, `lucide-`, `phosphor-`, `mdi-`, `octicon-`, `bi-`, `feather-`, `simple-icons-`, `eos-icons-`, `bxl-`, `bxs-`, `bx-`, `gmdi-`, `css-gg-`, `fab-`/`far-`/`fas-` → fall back to `\Filament\Support\generate_icon_html()`
+
+Sidebar and topbar item overrides, the `icon` override, and the `iconButton` override all route through it. Non-heroicon icons are pre-rendered via Filament's Blade Icons helper and handed to `<flux:navlist.item>` / `<flux:navbar.item>` as `HtmlString`, so registered Font Awesome / Tabler / Lucide icons keep rendering inside the Flux navigation.
+
+#### Bug fix
+
+Resolves `Flux component [icon.heroicon-o-document-text] does not exist` when Filament registered icons used the `heroicon-{variant}-*` Blade Icons convention.
+
+### Compatibility
+
+| Filament | Laravel | PHP | Livewire | Flux |
+|---|---|---|---|---|
+| ^5.0 | ^11 / ^12 / ^13 | ^8.2 | ^4.0 | ^2.14 |
+
+### Upgrading from 1.7.0
+
+Drop-in. The `schemaText` slug ships off by default. The HeroiconNormalizer auto-applies inside existing overrides — no API changes required.
+
+### Roadmap
+
+- `1.9.0` — Phase H5: stats overview widget
+- `1.10.0` — Phase H6: notifications envelope
+
 ## 1.7.0 - 2026-05-10
 
 ### Highlights
@@ -18,6 +67,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
     'modalHeading' => true,
     'modalDescription' => true,
 ]);
+
 
 ```
 | Slug | Filament view | Flux replacement |
@@ -75,6 +125,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 ]);
 
 
+
 ```
 | Slug | Filament view(s) | Flux replacement |
 |---|---|---|
@@ -129,6 +180,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 | Slug | Filament view | Flux replacement |
 |---|---|---|
@@ -171,6 +223,7 @@ Off by default. When opted in, Filament's three-button theme switcher (`<x-filam
 FilamentFluxPlugin::make()->useFluxNavigation([
     'themeSwitcher' => true,
 ]);
+
 
 
 
@@ -221,6 +274,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
 
 
 
+
 ```
 The default `useFluxNavigation()` call (no args) still ships with `shell => false` so panels can adopt the lighter sidebar/topbar item overrides without touching the structural shell.
 
@@ -254,6 +308,7 @@ FilamentFluxPlugin::make()->useFluxNavigation();
 
 
 
+
 ```
 Granular per-area opt-out:
 
@@ -262,6 +317,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
     'sidebar' => true,
     'topbar' => false,    // keep Filament's topbar items as-is
 ]);
+
 
 
 
@@ -302,6 +358,7 @@ FilamentFluxPlugin::make()->useEverywhere();
 
 
 
+
 ```
 Granular per-field opt-out:
 
@@ -310,6 +367,7 @@ FilamentFluxPlugin::make()->useEverywhere([
     'select' => false,    // keep Filament's <select> with client-side searchable, etc.
     'otp' => false,
 ]);
+
 
 
 
@@ -408,6 +466,7 @@ npm run build
 
 
 
+
 ```
 ```php
 use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
@@ -415,6 +474,7 @@ use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
 return $panel->plugins([
     FilamentFluxPlugin::make(),
 ]);
+
 
 
 
