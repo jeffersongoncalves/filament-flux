@@ -81,50 +81,41 @@
 }
 
 /*
- * Filament's topbar ships two pairs of toggle buttons that share the
- * `$store.sidebar.isOpen` predicate:
- *   - `fi-topbar-open-sidebar-btn` / `fi-topbar-close-sidebar-btn` are
- *     the mobile-style hamburger / X (Filament hides them on desktop
- *     via `lg:hidden`).
+ * Filament's topbar ships two pairs of toggle buttons gated by
+ * `$store.sidebar.isOpen`:
+ *   - `fi-topbar-open-sidebar-btn` / `fi-topbar-close-sidebar-btn`
+ *     (mobile hamburger + X). Filament wants them hidden on desktop
+ *     when the panel is `collapsibleOnDesktop()` (compact icon mode),
+ *     visible on desktop when the panel is purely
+ *     `fullyCollapsibleOnDesktop()` so the user can expand the
+ *     hidden sidebar.
  *   - `fi-topbar-open-collapse-sidebar-btn` /
- *     `fi-topbar-close-collapse-sidebar-btn` are the desktop chevron
- *     toggles (Filament shows them on desktop via `hidden lg:flex`).
+ *     `fi-topbar-close-collapse-sidebar-btn` (desktop chevrons inside
+ *     `fi-topbar-collapse-sidebar-btn-ctn`). Visible on desktop only.
  *
- * When the icon-button slug is on, those buttons render as
- * `<flux:button>` whose `inline-flex` utility class can win over
- * Filament's `lg:hidden` depending on stylesheet source order — so on
- * desktop the panel ends up showing both the mobile X and the desktop
- * chevron at the same time. Force the mobile pair off on >=lg and
- * keep the desktop pair confined to >=lg with `!important` so the
- * cascade stops mattering.
+ * When the icon-button slug is on, Flux's `<flux:button>` adds
+ * `inline-flex` with the same specificity as Filament's `lg:hidden`
+ * so a source-order race could leave both the mobile X and the
+ * desktop chevron visible at >=lg. Boost specificity with the
+ * `.fi-body` parent so we win cleanly without `!important`, and
+ * scope the open-button hide to the *non-fully-collapsible* case so
+ * `fullyCollapsibleOnDesktop()` panels keep an expand affordance.
  */
 @media (min-width: 1024px) {
-    .fi-topbar-open-sidebar-btn,
-    .fi-topbar-close-sidebar-btn {
-        display: none !important;
+    .fi-body .fi-topbar-close-sidebar-btn {
+        display: none;
     }
 
-    /*
-     * Filament's topbar wraps the desktop collapse buttons in a
-     * container guarded by `x-show="$store.sidebar.isOpen || @js($isSidebarCollapsibleOnDesktop)"`.
-     * Plugins that opt into Flux's compact icon mode through
-     * `fullyCollapsibleOnDesktop()` evaluate that flag as `false`, so
-     * once the sidebar is collapsed Alpine inlines `display: none`
-     * onto the container and the user has no way to expand it again.
-     * Force the container `display: flex !important` on desktop so
-     * the inner open/close chevrons (each guarded by their own
-     * `x-show`) remain available regardless of the panel's
-     * collapsibility flavor.
-     */
-    .fi-topbar-collapse-sidebar-btn-ctn {
-        display: flex !important;
+    .fi-body-has-sidebar-collapsible-on-desktop:not(.fi-body-has-sidebar-fully-collapsible-on-desktop)
+        .fi-topbar-open-sidebar-btn {
+        display: none;
     }
 }
 
 @media (max-width: 1023.98px) {
-    .fi-topbar-open-collapse-sidebar-btn,
-    .fi-topbar-close-collapse-sidebar-btn,
-    .fi-topbar-collapse-sidebar-btn-ctn {
-        display: none !important;
+    .fi-body .fi-topbar-collapse-sidebar-btn-ctn,
+    .fi-body .fi-topbar-open-collapse-sidebar-btn,
+    .fi-body .fi-topbar-close-collapse-sidebar-btn {
+        display: none;
     }
 }

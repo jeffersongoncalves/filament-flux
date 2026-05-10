@@ -77,6 +77,12 @@
             'type' => $tag === 'button' ? $type : null,
         ], fn ($v) => $v !== null && $v !== ''));
 
+        // Re-apply Filament's `fi-icon-btn` class so upstream selectors —
+        // e.g. `.fi-icon-btn:has(+ .fi-btn.fi-labeled-from-md)` — keep
+        // hiding the icon-only button next to its labeled twin. Without
+        // this, panels using `labeledFrom()` actions render both the
+        // icon-only and the labeled variant simultaneously.
+        $bag = $bag->class(['fi-icon-btn']);
         $bag = $bag->merge($attributes->getAttributes(), escape: false);
     @endphp
 
@@ -97,6 +103,7 @@
             'type' => $tag === 'button' ? $type : null,
         ], fn ($v) => $v !== null && $v !== ''));
 
+        $bag = $bag->class(['fi-icon-btn']);
         $bag = $bag->merge($attributes->getAttributes(), escape: false);
     @endphp
 
