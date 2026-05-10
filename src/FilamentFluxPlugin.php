@@ -88,6 +88,9 @@ class FilamentFluxPlugin implements Plugin
         'fieldset' => ['namespace' => 'filament', 'path' => 'filament/fieldset'],
         'section' => ['namespace' => 'filament', 'path' => 'filament/section'],
         'dropdown' => ['namespace' => 'filament', 'path' => 'filament/dropdown'],
+        'dropdownHeader' => ['namespace' => 'filament', 'path' => 'filament/dropdown-header'],
+        'modalHeading' => ['namespace' => 'filament', 'path' => 'filament/modal-heading'],
+        'modalDescription' => ['namespace' => 'filament', 'path' => 'filament/modal-description'],
     ];
 
     /**

@@ -23,6 +23,9 @@ it('useFluxComponents(true) enables every registered slug', function () {
         'fieldset',
         'section',
         'dropdown',
+        'dropdownHeader',
+        'modalHeading',
+        'modalDescription',
     ]);
 });
 
@@ -76,6 +79,25 @@ it('uses the filament namespace (not filament-panels) for the prepend', function
     $hints = $factory->getHints();
 
     expect($hints)->toHaveKey('filament');
+});
+
+it('prepends paths for H3 typography/header slugs', function () {
+    FilamentFluxPlugin::make()
+        ->useFluxComponents([
+            'dropdownHeader' => true,
+            'modalHeading' => true,
+            'modalDescription' => true,
+        ])
+        ->register(Panel::make()->id('comp-test')->path('comp-test'));
+
+    $factory = View::getFinder();
+    $hints = $factory->getHints();
+    $joined = implode("\n", $hints['filament'] ?? []);
+
+    expect($joined)
+        ->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament'.DIRECTORY_SEPARATOR.'dropdown-header')
+        ->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament'.DIRECTORY_SEPARATOR.'modal-heading')
+        ->toContain('components-overrides'.DIRECTORY_SEPARATOR.'filament'.DIRECTORY_SEPARATOR.'modal-description');
 });
 
 it('prepends paths for H2 wrapper slugs', function () {

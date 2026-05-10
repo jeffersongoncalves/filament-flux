@@ -16,7 +16,10 @@
     if (! is_string($icon)) {
         // Closures, BackedEnums (Heroicon::Sun) and HtmlString instances
         // — fall back to Filament's generator so the icon resolves correctly.
-        echo \Filament\Support\generate_icon_html($icon, $alias, $attributes, $size);
+        // The helper returns ?Htmlable; cast through toHtml() because some
+        // implementations (e.g. BladeUI\Icons\Svg) lack __toString().
+        $generated = \Filament\Support\generate_icon_html($icon, $alias, $attributes, $size);
+        echo $generated?->toHtml() ?? '';
         return;
     }
 

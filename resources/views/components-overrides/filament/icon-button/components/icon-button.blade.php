@@ -62,7 +62,8 @@
     {{-- Non-string icons (Heroicon enum, Closure, HtmlString) — wrap the
          original Filament-generated icon HTML inside a flux:button. --}}
     @php
-        $iconHtml = \Filament\Support\generate_icon_html($icon, $iconAlias, new \Illuminate\View\ComponentAttributeBag, $iconSize);
+        $iconHtmlable = \Filament\Support\generate_icon_html($icon, $iconAlias, new \Illuminate\View\ComponentAttributeBag, $iconSize);
+        $iconHtml = $iconHtmlable?->toHtml() ?? '';
 
         $bag = new \Illuminate\View\ComponentAttributeBag(array_filter([
             'square' => 'true',

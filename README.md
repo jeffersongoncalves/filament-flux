@@ -172,6 +172,9 @@ Available slugs:
 | `fieldset` | `filament::components.fieldset` | `<flux:fieldset>` + `<flux:legend>` |
 | `section` | `filament::components.section` | `<flux:card>` with header via `<flux:heading>` + `<flux:text>`; collapsible/persist preserved via Alpine |
 | `dropdown` | `filament::components.dropdown` + `dropdown.list` + `dropdown.list.item` | `<flux:dropdown>` + `<flux:menu>` + `<flux:menu.item>` (Filament `placement` → flux `position`/`align`) |
+| `dropdownHeader` | `filament::components.dropdown.header` | `<flux:heading size="sm">` with optional leading icon |
+| `modalHeading` | `filament::components.modal.heading` | `<flux:heading size="lg">` (envelope, events and Action machinery stay on Filament) |
+| `modalDescription` | `filament::components.modal.description` | `<flux:text>` |
 
 The plugin prepends per-slug hint paths to the `filament` view namespace; missing files fall back to vendor copies. Feature complexity (delete buttons on badges, key bindings, loading indicators, deferred badges, form-tag dropdown items, `secondary`/`divided`/`aside` section variants) doesn't fully map to Flux primitives — disable a slug if you rely on the Filament-only affordances.
 
