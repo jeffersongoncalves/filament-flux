@@ -4,17 +4,25 @@ All notable changes to `filament-flux` will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.9.1 - 2026-05-10
+
+### Fixed
+
+- **Shell sidebar toggle button no longer dead.** When the `useFluxNavigation(['shell' => true])` override was on, Filament's topbar `fi-topbar-open-sidebar-btn` (and its close/collapse twins) drove `$store.sidebar` while the rendered sidebar was a Flux `<ui-sidebar>` — so clicking the menu icon did nothing visually. Plugin now ships a small bridge that subscribes to the Filament Alpine store via `effect()`, dispatches Flux's documented `flux-sidebar-toggle` event whenever store and element disagree, and mirrors the inverse direction with a MutationObserver on the `data-flux-sidebar-collapsed-{mobile,desktop}` attributes (so backdrop clicks and `<ui-sidebar-toggle>` elements update the Filament store too). Reattaches on `livewire:navigated`. No-ops when `<ui-sidebar>` is absent.
+
 ## 1.9.0 - 2026-05-10
 
 ### Added
 
 - **Phase H5 — `statsCard` Blade override.** New slug for `useFluxComponents()` swaps the `<x-filament-widgets::stats-overview-widget.stat>` view for a Flux-native implementation:
+  
   - `<flux:card>` wraps the stat,
   - `<flux:subheading>` carries the leading icon + label,
   - `<flux:heading size="xl">` renders the value,
   - `<flux:text>` renders the description (color + before/after icon position preserved).
   
 - URL anchor (`<a>` vs `<div>`), Filament polling attribute, the Alpine chart canvas (`x-load`/`x-data="statsOverviewStatChart(...)"`), and every `fi-wi-stats-overview-stat*` BEM class are kept so existing CSS keeps working alongside the Flux skin.
+  
 
 ### Usage
 
@@ -22,6 +30,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 FilamentFluxPlugin::make()->useFluxComponents([
     'statsCard' => true,
 ]);
+
 
 ```
 Disable the slug if you depend on Filament-only stat affordances (array-tuple description colors, custom view per stat, etc.).
@@ -45,6 +54,7 @@ A new opt-in slug that targets a different Filament subpackage namespace, plus a
 FilamentFluxPlugin::make()->useFluxComponents([
     'schemaText' => true,
 ]);
+
 
 
 
@@ -98,6 +108,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
     'modalHeading' => true,
     'modalDescription' => true,
 ]);
+
 
 
 
@@ -161,6 +172,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 | Slug | Filament view(s) | Flux replacement |
 |---|---|---|
@@ -218,6 +230,7 @@ FilamentFluxPlugin::make()->useFluxComponents([
 
 
 
+
 ```
 | Slug | Filament view | Flux replacement |
 |---|---|---|
@@ -260,6 +273,7 @@ Off by default. When opted in, Filament's three-button theme switcher (`<x-filam
 FilamentFluxPlugin::make()->useFluxNavigation([
     'themeSwitcher' => true,
 ]);
+
 
 
 
@@ -316,6 +330,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
 
 
 
+
 ```
 The default `useFluxNavigation()` call (no args) still ships with `shell => false` so panels can adopt the lighter sidebar/topbar item overrides without touching the structural shell.
 
@@ -352,6 +367,7 @@ FilamentFluxPlugin::make()->useFluxNavigation();
 
 
 
+
 ```
 Granular per-area opt-out:
 
@@ -360,6 +376,7 @@ FilamentFluxPlugin::make()->useFluxNavigation([
     'sidebar' => true,
     'topbar' => false,    // keep Filament's topbar items as-is
 ]);
+
 
 
 
@@ -406,6 +423,7 @@ FilamentFluxPlugin::make()->useEverywhere();
 
 
 
+
 ```
 Granular per-field opt-out:
 
@@ -414,6 +432,7 @@ FilamentFluxPlugin::make()->useEverywhere([
     'select' => false,    // keep Filament's <select> with client-side searchable, etc.
     'otp' => false,
 ]);
+
 
 
 
@@ -518,6 +537,7 @@ npm run build
 
 
 
+
 ```
 ```php
 use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
@@ -525,6 +545,7 @@ use Jeffersongoncalves\FilamentFlux\FilamentFluxPlugin;
 return $panel->plugins([
     FilamentFluxPlugin::make(),
 ]);
+
 
 
 
