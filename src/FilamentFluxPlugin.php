@@ -16,6 +16,7 @@ use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
+use Jeffersongoncalves\FilamentFlux\Concerns\ManagesFieldBindings;
 use Jeffersongoncalves\FilamentFlux\Forms\Components\FluxCheckbox;
 use Jeffersongoncalves\FilamentFlux\Forms\Components\FluxCheckboxGroup;
 use Jeffersongoncalves\FilamentFlux\Forms\Components\FluxInput;
@@ -28,6 +29,8 @@ use Jeffersongoncalves\FilamentFlux\Support\AssetInjector;
 
 class FilamentFluxPlugin implements Plugin
 {
+    use ManagesFieldBindings;
+
     /**
      * Map of every Filament Form Field that auto-bind supports.
      *
@@ -52,14 +55,6 @@ class FilamentFluxPlugin implements Plugin
     protected bool $injectAppearance = true;
 
     protected bool $injectScripts = true;
-
-    /**
-     * Per-field auto-bind toggle. `null` disables the entire feature; an
-     * array maps each binding slug (see FIELD_BINDINGS) to a boolean.
-     *
-     * @var array<string, bool>|null
-     */
-    protected ?array $useEverywhere = null;
 
     /**
      * Per-area navigation override toggle. `null` disables overrides; an
@@ -185,36 +180,6 @@ class FilamentFluxPlugin implements Plugin
     }
 
     /**
-     * Replace Filament Form Fields with their Flux equivalents at the
-     * container level. Existing Resources continue to call `TextInput::make()`,
-     * `Select::make()` etc., but receive `FluxInput`/`FluxSelect` instances.
-     *
-     * @param  bool|array<string, bool>  $config  Pass `true` to enable all
-     *                                            bindings, `false` to disable, or a partial array keyed by slug
-     *                                            (input, textarea, select, checkbox, checkboxList, radio, toggle, otp).
-     */
-    public function useEverywhere(bool|array $config = true): static
-    {
-        if ($config === false) {
-            $this->useEverywhere = null;
-
-            return $this;
-        }
-
-        $defaults = array_fill_keys(array_keys(static::FIELD_BINDINGS), true);
-
-        if ($config === true) {
-            $this->useEverywhere = $defaults;
-
-            return $this;
-        }
-
-        $this->useEverywhere = array_merge($defaults, $config);
-
-        return $this;
-    }
-
-    /**
      * Replace Filament's `<x-filament-panels::sidebar.item|group>` and
      * `<x-filament-panels::topbar.item>` views with `<flux:navlist>` /
      * `<flux:navbar>` markup.
@@ -301,20 +266,6 @@ class FilamentFluxPlugin implements Plugin
     }
 
     /**
-     * Slugs of bindings currently active.
-     *
-     * @return array<int, string>
-     */
-    public function getActiveBindings(): array
-    {
-        if ($this->useEverywhere === null) {
-            return [];
-        }
-
-        return array_keys(array_filter($this->useEverywhere, fn (bool $on): bool => $on));
-    }
-
-    /**
      * Slugs of navigation areas overridden.
      *
      * @return array<int, string>
@@ -340,27 +291,6 @@ class FilamentFluxPlugin implements Plugin
         }
 
         return array_keys(array_filter($this->useFluxComponents, fn (bool $on): bool => $on));
-    }
-
-    protected function applyContainerBindings(): void
-    {
-        if ($this->useEverywhere === null) {
-            return;
-        }
-
-        foreach ($this->useEverywhere as $slug => $enabled) {
-            if (! $enabled) {
-                continue;
-            }
-
-            $binding = static::FIELD_BINDINGS[$slug] ?? null;
-
-            if ($binding === null) {
-                continue;
-            }
-
-            app()->bind($binding['from'], $binding['to']);
-        }
     }
 
     protected function applyComponentOverrides(): void
