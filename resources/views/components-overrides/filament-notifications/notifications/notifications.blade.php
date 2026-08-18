@@ -47,22 +47,32 @@
     @if ($broadcastChannel = $this->getBroadcastChannel())
         @script
             <script>
-                window.addEventListener('EchoLoaded', () => {
-                    window.Echo.private(@js($broadcastChannel)).notification(
-                        (notification) => {
-                            setTimeout(
-                                () =>
-                                    $wire.handleBroadcastNotification(
-                                        notification,
-                                    ),
-                                500,
-                            )
-                        },
-                    )
-                })
+                // Bind once per component instance. This block can be evaluated again for
+                // the same component, and every extra call stacks another subscription on
+                // the Echo channel, so a single broadcast notification would fire
+                // handleBroadcastNotification once per stacked subscription.
+                window.__fluxNotificationsBound = window.__fluxNotificationsBound || new Set()
 
-                if (window.Echo) {
-                    window.dispatchEvent(new CustomEvent('EchoLoaded'))
+                if (!window.__fluxNotificationsBound.has($wire.id)) {
+                    window.__fluxNotificationsBound.add($wire.id)
+
+                    window.addEventListener('EchoLoaded', () => {
+                        window.Echo.private(@js($broadcastChannel)).notification(
+                            (notification) => {
+                                setTimeout(
+                                    () =>
+                                        $wire.handleBroadcastNotification(
+                                            notification,
+                                        ),
+                                    500,
+                                )
+                            },
+                        )
+                    })
+
+                    if (window.Echo) {
+                        window.dispatchEvent(new CustomEvent('EchoLoaded'))
+                    }
                 }
             </script>
         @endscript
